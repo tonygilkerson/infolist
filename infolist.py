@@ -3,7 +3,7 @@ import yaml
 
 class MyCLI(cmd.Cmd):
     prompt = '>> '
-    intro = 'Welcome to MyCLI. Type "help" for available commands.'
+    intro = 'InfoCLI, Type "help" for available commands.'
 
     def do_hello(self, line):
         """Print a greeting."""
@@ -20,11 +20,9 @@ class MyCLI(cmd.Cmd):
     def do_test(self, line):
         """Test it."""
         with open("/home/tgilkerson/infolsit-config.yaml", "r") as file:
-            conf = yaml.safe_load(file)
-            for item in conf['infolist']:
-                print(item['name'])
-                print(item['desc'])
-                print()
+            infoData = yaml.safe_load(file)
+            infoSorted = dict(sorted(infoData.items()))
+            print(infoSorted["dddaaa xxx"])
             
 if __name__ == '__main__':
     MyCLI().cmdloop()
