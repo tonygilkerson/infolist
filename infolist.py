@@ -29,12 +29,6 @@ class MyCLI(cmd.Cmd):
 
     def preloop(self):
         """Run this method before the command loop starts."""
-        self.do_t(self)
-
-    def __init__(self):
-        # Call the constructor of the superclass
-        super().__init__()
-
         #
         # Where is the infolist data?
         #
@@ -56,6 +50,14 @@ class MyCLI(cmd.Cmd):
         else:
             print(f"Infolist data file not found: {infolistDataPath}")    
             sys.exit(1)
+        #
+        # do this by default
+        #
+        self.do_t(self)
+
+    # def __init__(self):
+    #     # Call the constructor of the superclass
+    #     super().__init__()
 
     def do_hello(self, line):
         """Print a greeting."""
