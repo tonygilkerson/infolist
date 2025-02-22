@@ -13,4 +13,10 @@ pip install poetry
 
 # Install project dependencies
 poetry install
+
+
+## Dev Env
+printf "INFOLIST_DATA=./infolist-dev.yaml\n" >> .env
 ```
+
+
