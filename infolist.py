@@ -2,12 +2,34 @@ import cmd
 import yaml
 import os
 import sys
+import tty
+import termios
+from tabulate import tabulate
+
+
+# read a single character on a unix system
+# https://exceptionshub.com/python-read-a-single-character-from-the-user.html
+def read_unix(count: int):
+    fd = sys.stdin.fileno()
+
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(count)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+    return ch
 
 class MyCLI(cmd.Cmd):
     prompt = '>> '
     infoDataPath = ""
-    infoDataDict = {}
+    infoDataList = []
     intro = ""
+
+    def preloop(self):
+        """Run this method before the command loop starts."""
+        self.do_t(self)
 
     def __init__(self):
         # Call the constructor of the superclass
@@ -29,7 +51,8 @@ class MyCLI(cmd.Cmd):
         #
         if os.path.exists(infolistDataPath):
             with open(infolistDataPath, "r") as file:
-                self.infoDataDict = dict( yaml.safe_load(file).items())
+                # self.infoDataList = dict( yaml.safe_load(file).items())
+                self.infoDataList = list(yaml.safe_load(file))
         else:
             print(f"Infolist data file not found: {infolistDataPath}")    
             sys.exit(1)
@@ -42,14 +65,69 @@ class MyCLI(cmd.Cmd):
         """Exit the CLI."""
         return True
 
-    def do_x(self, line):
+    def do_q(self, line):
         """Exit the CLI."""
         return True
 
-    def do_test(self, line):
-        """Test it."""
-        # print(infoSorted["dddaaa xxx"])
-        print("test")
-            
+    def default(self, line):
+        print(f"you typed: {line}")
+        return super().default(line)
+    
+    
+    def do_tt(self, line):
+        print("\nPress any key: ")
+        char = read_unix(1)
+        print(f"you typed: {char}\n")
+
+    def do_t(self, line):
+      """Test it."""
+      char = ""
+      selectIndex = 0
+     
+      while char != "q":
+          table = list()
+          for i, item in enumerate(self.infoDataList):
+              item["Name"] = item["Name"].replace("[x] ", "")
+              item["Name"] = item["Name"].replace("[ ] ", "")
+              if i == selectIndex:
+                  item["Name"] =  "[x] " + item["Name"]
+              else:
+                  item["Name"] =  "[ ] " + item["Name"]
+              table.append( list(item.values()) )
+
+          # Print table
+          os.system('clear')
+          print('\nType "Enter" to select, "q" to quit, "," and "." up and down\n')
+          outTable = tabulate(
+              table, 
+              headers=self.infoDataList[0].keys(), 
+              tablefmt="simple", 
+              stralign="left", 
+              maxcolwidths=[None, 30]
+          )
+          print(outTable)
+          
+          # 
+          # User input
+          #
+          char = read_unix(1)
+          asciiChar = ord(char)
+          if asciiChar == 13: # Enter
+              print(f"\n\nyou selected: {self.infoDataList[selectIndex]}\n")
+              return True
+          elif asciiChar == 44: # , aka <
+              selectIndex -= 1
+          elif asciiChar == 46: # . aka >
+              selectIndex += 1
+          elif asciiChar == 113: # q
+              break
+          
+          # bounds check
+          if selectIndex < 0:
+              selectIndex = 0
+          elif selectIndex >= len(self.infoDataList):
+              selectIndex = len(self.infoDataList) - 1
+
+
 if __name__ == '__main__':
     MyCLI().cmdloop()
