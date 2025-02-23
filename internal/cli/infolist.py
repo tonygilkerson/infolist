@@ -2,27 +2,12 @@ import cmd
 import yaml
 import os
 import sys
-import tty
-import termios
+
 from tabulate import tabulate
-
-
-# read a single character on a unix system
-# https://exceptionshub.com/python-read-a-single-character-from-the-user.html
-def read_unix(count: int):
-    fd = sys.stdin.fileno()
-
-    old_settings = termios.tcgetattr(fd)
-    try:
-        tty.setraw(fd)
-        ch = sys.stdin.read(count)
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-
-    return ch
+from internal.utils.io import read_unix
 
 class InfolistCLI(cmd.Cmd):
-    prompt = '>> '
+    prompt = ': '
     infoDataPath = ""
     infoDataList = []
     intro = ""
@@ -55,7 +40,6 @@ class InfolistCLI(cmd.Cmd):
         #
         self.do_list(self)
 
-
     def do_quit(self, line):
         """Exit the CLI."""
         return True
@@ -68,18 +52,20 @@ class InfolistCLI(cmd.Cmd):
         print(f"you typed: {line}")
         return super().default(line)
     
-    def do_tt(self, line):
+    def do_key(self, line):
+        """Read a single keypress."""
         print("\nPress any key: ")
         char = read_unix(1)
         print(f"you typed: {char}\n")
 
     def do_list(self, line):
-      """Test it."""
+      """A list is displayed for you to select an item from."""
       char = ""
       selectIndex = 0
-     
+      table = list()
+
       while char != "q":
-          table = list()
+          table = []
           selectField = ""
           for item in self.infoDataList:
               row = [selectField, item["Name"], item["Type"], item["Description"]]
@@ -103,12 +89,13 @@ class InfolistCLI(cmd.Cmd):
           # User input
           #
           char = read_unix(1)
-          asciiChar = ord(char)
 
           # ENTER
-          if asciiChar == 13: # Enter
-              print(f"\n\nyou selected: {self.infoDataList[selectIndex]}\n")
-              return True
+          if char == '\r': 
+              selectedItemName = table[selectIndex][1]
+              self.runItem(selectedItemName)
+              break
+          
           # UP
           elif char == "<" or char == ",": 
               selectIndex -= 1
@@ -118,15 +105,40 @@ class InfolistCLI(cmd.Cmd):
               selectIndex += 1
           
           # QUIT
-          elif asciiChar == 113: # q
+          elif char == 'q':
               break
           
           # bounds check
           if selectIndex < 0:
               selectIndex = 0
           elif selectIndex >= len(self.infoDataList):
-              selectIndex = len(self.infoDataList) - 1
+              selectIndex = 0 # just rapp around to the top
+
+    def findItem(self, name):
+        """Find an item by name."""
+        for item in self.infoDataList:
+            if item["Name"] == name:
+                return item
+        return None
+    
+    def runItem(self, name):
+        """Run an item by name."""
+        item = self.findItem(name)
+
+        if item["Type"] == "Command":
+            # Command to execute
+            command = item["cmd"]["command"]
+            args = item["cmd"]["args"]
+            print(f"\n{" ".join(args)}\n")
+            os.execvp(command, args)
+
+        elif item["Type"] == "Link":
+            print(f"\nURL:\n{item["URL"]}\n")
+        elif item["Type"] == "Note":
+            print(f"\nNote:\n{item["Note"]}\n")
+        else:
+            print(f"Unknown type: {item["Type"]}")
 
 
-if __name__ == '__main__':
-    InfolistCLI().cmdloop()
+
+
