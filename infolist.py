@@ -56,10 +56,6 @@ class InfolistCLI(cmd.Cmd):
         self.do_list(self)
 
 
-    def do_hello(self, line):
-        """Print a greeting."""
-        print("Hello, World! ")
-
     def do_quit(self, line):
         """Exit the CLI."""
         return True
@@ -71,7 +67,6 @@ class InfolistCLI(cmd.Cmd):
     def default(self, line):
         print(f"you typed: {line}")
         return super().default(line)
-    
     
     def do_tt(self, line):
         print("\nPress any key: ")
@@ -85,27 +80,22 @@ class InfolistCLI(cmd.Cmd):
      
       while char != "q":
           table = list()
-          for i, item in enumerate(self.infoDataList):
-              name = item["Name"]
-              name = name.replace("(X) ", "")
-              name = name.replace("( ) ", "")
-              if i == selectIndex:
-                  name =  "(X) " + name
-              else:
-                  name =  "( ) " + name
-
-              row = [name, item["Type"], item["Description"]]
+          selectField = ""
+          for item in self.infoDataList:
+              row = [selectField, item["Name"], item["Type"], item["Description"]]
               table.append(row)
 
-          # Print table
+          # Sort input table by Name before display
+          table.sort(key=lambda x: x[1])
+          table[selectIndex][0] = "=>"
           os.system('clear')
           print('\nType "Enter" to select, "q" to quit, "<" and ">" up and down\n')
           outTable = tabulate(
               table, 
-              ["Name", "Type", "Description", "xxx"], 
+              ["", "Name", "Type", "Description"], 
               tablefmt="simple", 
               stralign="left", 
-              maxcolwidths=[None, None, 30]
+              maxcolwidths=[None, None, None,45]
           )
           print(outTable)
           

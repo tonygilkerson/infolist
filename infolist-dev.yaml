@@ -1,12 +1,12 @@
 
-- Name: myls
+- Name: b-myls
   Type: Command
   Description: This is my ls command
   Command: ls
-- Name: myURL
+- Name: a-myURL
   Type: Link
-  Description: desc-ccc today is the fist day of the month and the last day of the month and someone is going to the moondesc-ccc today is the fist day of the month and the last day of the month and someone is going to the moondesc-ccc today is the fist day of the month and the last day of the month and someone is going to the moon
-- Name: MyNote
+  Description: desc-ccc today is the fist day of the month and the last day of the month and someone is going to the moondesc-ccc today is the fist day of the month a day of the month and someone is going to the moon
+- Name: c-MyNote
   Type: Note
   Description: This is a note
 
