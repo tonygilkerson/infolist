@@ -21,7 +21,7 @@ def read_unix(count: int):
 
     return ch
 
-class MyCLI(cmd.Cmd):
+class InfolistCLI(cmd.Cmd):
     prompt = '>> '
     infoDataPath = ""
     infoDataList = []
@@ -53,11 +53,8 @@ class MyCLI(cmd.Cmd):
         #
         # do this by default
         #
-        self.do_t(self)
+        self.do_list(self)
 
-    # def __init__(self):
-    #     # Call the constructor of the superclass
-    #     super().__init__()
 
     def do_hello(self, line):
         """Print a greeting."""
@@ -81,7 +78,7 @@ class MyCLI(cmd.Cmd):
         char = read_unix(1)
         print(f"you typed: {char}\n")
 
-    def do_t(self, line):
+    def do_list(self, line):
       """Test it."""
       char = ""
       selectIndex = 0
@@ -89,23 +86,26 @@ class MyCLI(cmd.Cmd):
       while char != "q":
           table = list()
           for i, item in enumerate(self.infoDataList):
-              item["Name"] = item["Name"].replace("[x] ", "")
-              item["Name"] = item["Name"].replace("[ ] ", "")
+              name = item["Name"]
+              name = name.replace("(X) ", "")
+              name = name.replace("( ) ", "")
               if i == selectIndex:
-                  item["Name"] =  "[x] " + item["Name"]
+                  name =  "(X) " + name
               else:
-                  item["Name"] =  "[ ] " + item["Name"]
-              table.append( list(item.values()) )
+                  name =  "( ) " + name
+
+              row = [name, item["Type"], item["Description"]]
+              table.append(row)
 
           # Print table
           os.system('clear')
-          print('\nType "Enter" to select, "q" to quit, "," and "." up and down\n')
+          print('\nType "Enter" to select, "q" to quit, "<" and ">" up and down\n')
           outTable = tabulate(
               table, 
-              headers=self.infoDataList[0].keys(), 
+              ["Name", "Type", "Description", "xxx"], 
               tablefmt="simple", 
               stralign="left", 
-              maxcolwidths=[None, 30]
+              maxcolwidths=[None, None, 30]
           )
           print(outTable)
           
@@ -114,13 +114,20 @@ class MyCLI(cmd.Cmd):
           #
           char = read_unix(1)
           asciiChar = ord(char)
+
+          # ENTER
           if asciiChar == 13: # Enter
               print(f"\n\nyou selected: {self.infoDataList[selectIndex]}\n")
               return True
-          elif asciiChar == 44: # , aka <
+          # UP
+          elif char == "<" or char == ",": 
               selectIndex -= 1
-          elif asciiChar == 46: # . aka >
+
+          # DOWN
+          elif char == ">" or char == ".": 
               selectIndex += 1
+          
+          # QUIT
           elif asciiChar == 113: # q
               break
           
@@ -132,4 +139,4 @@ class MyCLI(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    MyCLI().cmdloop()
+    InfolistCLI().cmdloop()
