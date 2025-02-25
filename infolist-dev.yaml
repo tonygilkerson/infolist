@@ -1,4 +1,3 @@
-
 - Name: b-myls
   Type: Command
   Description: This is my ls command
@@ -8,16 +7,31 @@
       - ls
       - -l
       - -a
-- Name: a-myURL
-  Type: Link
-  Description: This is my URL
-  URL: https://example.com
+
 - Name: c-MyNote
   Type: Note
   Description: This is a note
   Note: This is my note
-- Name: aa-myURL
+
+- Name: google
   Type: Link
-  Description: This is my URL
-  URL: https://example2.com
+  Description: a link to google
+  URL: https://www.google.com
+
+- Name: yahoo
+  Type: Link
+  Description: A link to yahoo
+  URL: https://www.yahoo.com
+
+
+
+
+
+
+
+
+
+
+  
+
 

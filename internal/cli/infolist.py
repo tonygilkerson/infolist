@@ -20,7 +20,7 @@ class InfolistCLI(cmd.Cmd):
         infolistDataPath = os.getenv("INFOLIST_DATA","~/infolist-data.yaml")
 
         self.infoDataPath = infolistDataPath
-        self.intro = f'\nInfo List, type "help" for available commands. Using ({infolistDataPath})'
+        self.intro = f'\nType "help" or "q" to quit. Using ({infolistDataPath})'
 
         #
         # Load infolist data
@@ -107,7 +107,7 @@ class InfolistCLI(cmd.Cmd):
           
           # bounds check
           if selectIndex < 0:
-              selectIndex = 0
+              selectIndex = len(self.infoDataList) - 1 # just wrap around to the bottom
           elif selectIndex >= len(self.infoDataList):
               selectIndex = 0 # just rapp around to the top
 
