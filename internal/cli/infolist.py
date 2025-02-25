@@ -17,10 +17,7 @@ class InfolistCLI(cmd.Cmd):
         #
         # Where is the infolist data?
         #
-        infolistDataPath = os.getenv("INFOLIST_DATA")
-        if len(infolistDataPath) == 0:
-            # Use default
-            infolistDataPath = "~/infolist-data.yaml"
+        infolistDataPath = os.getenv("INFOLIST_DATA","~/infolist-data.yaml")
 
         self.infoDataPath = infolistDataPath
         self.intro = f'\nInfo List, type "help" for available commands. Using ({infolistDataPath})'
@@ -129,15 +126,15 @@ class InfolistCLI(cmd.Cmd):
             # Command to execute
             command = item["cmd"]["command"]
             args = item["cmd"]["args"]
-            print(f"\n{" ".join(args)}\n")
+            print(f'\n{" ".join(args)}\n')
             os.execvp(command, args)
 
         elif item["Type"] == "Link":
-            print(f"\nURL:\n{item["URL"]}\n")
+            print(f'\nURL:\n{item["URL"]}\n')
         elif item["Type"] == "Note":
-            print(f"\nNote:\n{item["Note"]}\n")
+            print(f'\nNote:\n{item["Note"]}\n')
         else:
-            print(f"Unknown type: {item["Type"]}")
+            print(f'Unknown type: {item["Type"]}')
 
 
 
