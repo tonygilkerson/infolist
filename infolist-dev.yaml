@@ -13,6 +13,22 @@
   Description: This is a note
   Note: This is my note
 
+- Name: Keys on Gnome
+  Type: Note
+  Description: How I have my keys mapped on Gnome
+  Note: |
+    Settings:
+      Devices:
+        Keyboard Shortcuts:
+          Ctrl+Tab     Switch applications
+          Ctrl+`       Switch windows of the same application
+          Ctrl+Space   Show the overview
+          Ctrl+Up      Move to workspace above
+          Ctrl+Down    Move to workspace below
+    Tweaks:
+      Fonts:
+        Scaling Factor: 1.25 
+
 - Name: google
   Type: Link
   Description: a link to google
@@ -32,6 +48,6 @@
 
 
 
-  
+
 
 

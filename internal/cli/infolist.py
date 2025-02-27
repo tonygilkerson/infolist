@@ -132,7 +132,7 @@ class InfolistCLI(cmd.Cmd):
         elif item["Type"] == "Link":
             print(f'\nURL:\n{item["URL"]}\n')
         elif item["Type"] == "Note":
-            print(f'\nNote:\n{item["Note"]}\n')
+            print(f'\nNote:\n\n{item["Note"]}\n')
         else:
             print(f'Unknown type: {item["Type"]}')
 
