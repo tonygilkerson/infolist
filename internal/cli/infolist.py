@@ -85,13 +85,21 @@ class InfolistCLI(cmd.Cmd):
           # 
           # User input
           #
-          char = read_unix(1)
+          char = read_unix()
 
           # ENTER
           if char == '\r': 
               selectedItemName = table[selectIndex][1]
               self.runItem(selectedItemName)
               break
+          
+          # UP
+          elif char == "UP": 
+              selectIndex -= 1
+
+          # DOWN
+          elif char == "DOWN": 
+              selectIndex += 1
           
           # UP
           elif char == "<" or char == ",": 
