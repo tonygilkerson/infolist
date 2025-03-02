@@ -62,24 +62,18 @@ class InfolistCLI(cmd.Cmd):
       table = list()
 
       while char != "q":
+          # Create a table for display from the infoDataList
           table = []
           selectField = ""
           for item in self.infoDataList:
               row = [selectField, item["Name"], item["Type"], item["Description"]]
               table.append(row)
 
-          # Sort input table by Name before display
-          table.sort(key=lambda x: x[1])
-          table[selectIndex][0] = "=>"
+          # Sort the display table by Name
+          outTable = self.sortTable(table, selectIndex)
+
+          # Display the table
           os.system('clear')
-          print('\nType "Enter" to select, "q" to quit, "<" and ">" up and down\n')
-          outTable = tabulate(
-              table, 
-              ["", "Name", "Type", "Description"], 
-              tablefmt="simple", 
-              stralign="left", 
-              maxcolwidths=[None, None, None,45]
-          )
           print(outTable)
           
           # 
@@ -101,17 +95,11 @@ class InfolistCLI(cmd.Cmd):
           elif char == "DOWN": 
               selectIndex += 1
           
-          # UP
-          elif char == "<" or char == ",": 
-              selectIndex -= 1
-
-          # DOWN
-          elif char == ">" or char == ".": 
-              selectIndex += 1
-          
           # QUIT
           elif char == 'q':
               break
+          else:
+              print(f"{char}")
           
           # bounds check
           if selectIndex < 0:
@@ -126,6 +114,21 @@ class InfolistCLI(cmd.Cmd):
                 return item
         return None
     
+    def sortTable(self, table, selectIndex):
+        """Sort the table by Name."""
+        # Sort input table by Name before display
+        table.sort(key=lambda x: x[1])
+        table[selectIndex][0] = "=>"
+        print('\nType "Enter" to select, "q" to quit, "<" and ">" up and down\n')
+        outTable = tabulate(
+            table, 
+            ["", "Name", "Type", "Description"], 
+            tablefmt="simple", 
+            stralign="left", 
+            maxcolwidths=[None, None, None,45]
+        )
+        return outTable
+
     def runItem(self, name):
         """Run an item by name."""
         item = self.findItem(name)
@@ -134,7 +137,14 @@ class InfolistCLI(cmd.Cmd):
             # Command to execute
             command = item["cmd"]["command"]
             args = item["cmd"]["args"]
-            print(f'\n{" ".join(args)}\n')
+
+            # Check to see if we should  show the command
+            if item["cmd"]["showCommand"]:
+                print(f'\n{" ".join(args)}\n')
+            else:
+                print("\n")
+
+            # Run the command
             os.execvp(command, args)
 
         elif item["Type"] == "Link":

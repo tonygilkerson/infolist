@@ -1,12 +1,30 @@
-- Name: b-myls
+- Name: myls
   Type: Command
   Description: This is my ls command
   cmd:
+    showCommand: True
     command: ls
     args:
       - ls
       - -l
       - -a
+
+- Name: Show Python venv
+  Type: Command
+  Description: Show active Python venv
+  cmd:
+    showCommand: False
+    command: python3 
+    args:
+      - python3
+      - -c
+      - |
+        import sys
+        prefix = sys.prefix
+        if prefix:
+          print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
+        else:
+          print("\nNo Python venv is active, no prefix found\n")  
 
 - Name: c-MyNote
   Type: Note
