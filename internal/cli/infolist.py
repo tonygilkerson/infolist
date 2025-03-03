@@ -11,9 +11,15 @@ class InfolistCLI(cmd.Cmd):
     infoDataPath = ""
     infoDataList = []
     intro = ""
-    sortIndex = 1 # sort by Name by default
+    
+    # sort by Name by default
+    sortIndex = 1 
+    
+    # Filter row by items in this list, if empty then no filter
     filters = list()
     
+    # Types to display, if empty then all types 
+    types = list()
 
     def preloop(self):
         """Run this method before the command loop starts."""
@@ -44,6 +50,19 @@ class InfolistCLI(cmd.Cmd):
         print(f"you typed: {line}")
         return super().default(line)
 
+    def printTypes(self):
+        if len(self.types) > 0:
+            for i, t in enumerate(self.types):
+                if i == 0:
+                    if len(self.types) == 1:
+                        print(f"Types: {t}")
+                    else:
+                        print(f"Types: {t}", end="")
+                elif i == len(self.types) - 1:
+                    print(f", {t}\n")
+                else:
+                    print(f", {t}", end="")
+    
     def printFilters(self):
         if len(self.filters) > 0:
             for i, f in enumerate(self.filters):
@@ -104,6 +123,22 @@ class InfolistCLI(cmd.Cmd):
         else:
             print(f'Unknown type: {item["Type"]}')
 
+    def isFilter(self, content):
+        """Check if the content is included when filter is applied"""
+        # The content is expected to be things like Name or Description
+       
+        # Assume the content is included when the filter is applied
+        included = True
+
+        # If filters exist then at least one of the filters must be contained in the content
+        if len(self.filters) > 0:
+            included = False
+            for f in self.filters:
+                if f.lower() in content.lower(): 
+                    included = True
+        # Return
+        return included
+    
     def do_q(self, line):
         """Quit and exit the CLI"""
         return True
@@ -111,14 +146,21 @@ class InfolistCLI(cmd.Cmd):
         """Clear the screen"""
         os.system('clear')
 
+    def do_type(self,line):
+        """Select types. Usage: type <type1> <type2> ..."""
+        if line:
+            for t in line.split():
+                self.types.append(t)
+        self.printTypes()
+
     def do_filter(self,line):
-        """Add filters. Usage: filter <filter1> <filter2> ..."""
+        """Add filters. Usage: filter <filter1> <filter2> ... Or will display current filters if no args"""
         if line:
             for s in line.split():
                 self.filters.append(s)
         self.printFilters()
 
-    def do_clsfilter(self,line):
+    def do_clsfilters(self,line):
         """Clear filter, aka show all"""
         self.filters = list()
 
@@ -152,19 +194,11 @@ class InfolistCLI(cmd.Cmd):
           # Create a table for display from the infoDataList
           table = []
           selectField = ""
+
           for item in self.infoDataList:
               
-              if len(self.filters) > 0:
-                  displayRow = False
-                  for f in self.filters:
-                      print(f"Look for {f}\n")
-                      print(f"{f in item["Name"]}\n")
-                      if f in item["Name"]: 
-                          displayRow = True
-              else:
-                  displayRow = True
-
-              if displayRow:  
+              # Check to see if Name passes the filter
+              if self.isFilter(item["Name"]):  
                   row = [selectField, item["Name"], item["Type"], item["Description"]]
                   table.append(row)
 
@@ -199,8 +233,7 @@ class InfolistCLI(cmd.Cmd):
           # QUIT
           elif char == 'q':
               break
-          else:
-              print(f"{char}") # DEVTODO
+
           
           # bounds check
           if selectIndex < 0:
