@@ -123,21 +123,40 @@ class InfolistCLI(cmd.Cmd):
         else:
             print(f'Unknown type: {item["Type"]}')
 
-    def isFilter(self, content):
+    def isFilter(self,content):
         """Check if the content is included when filter is applied"""
         # The content is expected to be things like Name or Description
        
         # Assume the content is included when the filter is applied
-        included = True
+        isIncluded = True
 
         # If filters exist then at least one of the filters must be contained in the content
         if len(self.filters) > 0:
-            included = False
+            isIncluded = False
             for f in self.filters:
-                if f.lower() in content.lower(): 
-                    included = True
+                # a -filter means if content does NOT contain it
+                if f.startswith("-"):                  
+                  if f[1:].lower() not in content.lower(): 
+                      isIncluded = True
+                else:
+                  if f.lower() in content.lower(): 
+                      isIncluded = True
         # Return
-        return included
+        return isIncluded
+    
+    def isType(self, rowType):
+        """Check if the row is included when type filter is applied"""
+        # Assume the row is included when the type filter is applied
+        isIncluded = True
+
+        # If type filter exist then filter rows based on its type
+        if len(self.types) > 0:
+            isIncluded = False
+            for t in self.types:
+                if t.lower() in rowType.lower(): 
+                    isIncluded = True
+        # Return
+        return isIncluded
     
     def do_q(self, line):
         """Quit and exit the CLI"""
@@ -160,9 +179,13 @@ class InfolistCLI(cmd.Cmd):
                 self.filters.append(s)
         self.printFilters()
 
-    def do_clsfilters(self,line):
-        """Clear filter, aka show all"""
+    def do_clearfilters(self,line):
+        """Clear filters, aka no filter, show all"""
         self.filters = list()
+
+    def do_cleartypes(self,line):
+        """Clear types, aka show all types"""
+        self.types = list()
 
     def do_sort(self, line):
         """Sort list by Name. Usage: sort [name|type|description]"""
@@ -197,8 +220,10 @@ class InfolistCLI(cmd.Cmd):
 
           for item in self.infoDataList:
               
-              # Check to see if Name passes the filter
-              if self.isFilter(item["Name"]):  
+              # Check to see if Name or Description passes the filter
+              # Also check if it is the correct type
+              nameDesc = item["Name"] + " " + item["Description"]
+              if self.isFilter(nameDesc) and self.isType(item["Type"]):  
                   row = [selectField, item["Name"], item["Type"], item["Description"]]
                   table.append(row)
 

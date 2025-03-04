@@ -1,6 +1,6 @@
 - Name: myls
   Type: Command
-  Description: This is my ls command
+  Description: This is my ls command cool
   cmd:
     showCommand: True
     command: ls
@@ -26,9 +26,9 @@
         else:
           print("\nNo Python venv is active, no prefix found\n")  
 
-- Name: c-MyNote
+- Name: ccc-MyNote
   Type: Note
-  Description: This is a note
+  Description: This is a note beans
   Note: This is my note
 
 - Name: Keys on Gnome
