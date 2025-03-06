@@ -4,7 +4,7 @@ import os
 import sys
 
 from tabulate import tabulate
-from internal.utils.io import read_unix
+from .util import read_unix
 
 class InfolistCLI(cmd.Cmd):
     prompt = ': '
