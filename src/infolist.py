@@ -2,6 +2,7 @@ import cmd
 import yaml
 import os
 import sys
+from pathlib import Path
 
 from tabulate import tabulate
 from .util import read_unix
@@ -9,24 +10,24 @@ from .util import read_unix
 class InfolistCLI(cmd.Cmd):
     prompt = ': '
     infoDataPath = ""
-    infoDataList = []
+    infoDataList: list[dict[str, str]] = []
     intro = ""
     
     # sort by Name by default
     sortIndex = 1 
     
     # Filter row by items in this list, if empty then no filter
-    filters = list()
+    filters: list[str] = list( )
     
     # Types to display, if empty then all types 
-    types = list()
+    types: list[str] = list()
 
     def preloop(self):
         """Run this method before the command loop starts."""
         #
         # Where is the infolist data?
         #
-        infolistDataPath = os.getenv("INFOLIST_DATA","~/infolist-data.yaml")
+        infolistDataPath = os.getenv("INFOLIST_DATA", str(Path.home()) + "/infolist-data.yaml")
 
         self.infoDataPath = infolistDataPath
         self.intro = f'\nEnter a command, type "help" or "q" to quit. Using ({infolistDataPath})'
@@ -46,7 +47,7 @@ class InfolistCLI(cmd.Cmd):
         #
         # self.do_list("")
 
-    def default(self, line):
+    def default(self, line: str):
         print(f"you typed: {line}")
         return super().default(line)
 
@@ -76,29 +77,30 @@ class InfolistCLI(cmd.Cmd):
                 else:
                     print(f", {f}", end="")
 
-    def findItem(self, name):
+    def findItem(self, name: str):
         """Find an item by name."""
         for item in self.infoDataList:
             if item["Name"] == name:
                 return item
         return None
     
-    def sortTable(self, table, selectIndex):
+    def sortTable(self, table: list[list[str]], selectIndex: int) -> str:
         """Sort the table by Name."""
         # Sort input table by Name before display
         table.sort(key=lambda x: x[self.sortIndex])
         table[selectIndex][0] = "=>"
         
-        outTable = tabulate(
+
+        userFriendlyOutput = tabulate(
             table, 
             ["", "Name", "Type", "Description"], 
             tablefmt="simple", 
             stralign="left", 
             maxcolwidths=[None, None, None,45]
         )
-        return outTable
+        return userFriendlyOutput
 
-    def runItem(self, name):
+    def runItem(self, name: str):
         """Run an item by name."""
         item = self.findItem(name)
 
@@ -123,7 +125,7 @@ class InfolistCLI(cmd.Cmd):
         else:
             print(f'Unknown type: {item["Type"]}')
 
-    def isFilter(self,content):
+    def isFilter(self,content: str):
         """Check if the content is included when filter is applied"""
         # The content is expected to be things like Name or Description
        
@@ -144,7 +146,7 @@ class InfolistCLI(cmd.Cmd):
         # Return
         return isIncluded
     
-    def isType(self, rowType):
+    def isType(self, rowType: str):
         """Check if the row is included when type filter is applied"""
         # Assume the row is included when the type filter is applied
         isIncluded = True
@@ -158,36 +160,36 @@ class InfolistCLI(cmd.Cmd):
         # Return
         return isIncluded
     
-    def do_q(self, line):
+    def do_q(self, line: str):
         """Quit and exit the CLI"""
         return True
-    def do_cc(self, line):
+    def do_cc(self, line: str):
         """Clear the screen"""
         os.system('clear')
 
-    def do_type(self,line):
+    def do_type(self,line: str):
         """Select types. Usage: type <type1> <type2> ..."""
         if line:
             for t in line.split():
                 self.types.append(t)
         self.printTypes()
 
-    def do_filter(self,line):
+    def do_filter(self,line: str):
         """Add filters. Usage: filter <filter1> <filter2> ... Or will display current filters if no args"""
         if line:
             for s in line.split():
                 self.filters.append(s)
         self.printFilters()
 
-    def do_clearfilters(self,line):
+    def do_clearfilters(self,line: str):
         """Clear filters, aka no filter, show all"""
         self.filters = list()
 
-    def do_cleartypes(self,line):
+    def do_cleartypes(self,line: str):
         """Clear types, aka show all types"""
         self.types = list()
 
-    def do_sort(self, line):
+    def do_sort(self, line: str):
         """Sort list by Name. Usage: sort [name|type|description]"""
         if line.lower() == "name":
             self.sortIndex = 1
@@ -201,17 +203,17 @@ class InfolistCLI(cmd.Cmd):
         else:
             print(f"Unknown sort option: '{line}'")
    
-    def do_key(self, line):
+    def do_key(self, line: str):
         """Read a single keypress"""
         print("\nPress any key: ")
         char = read_unix()
         print(f"you typed: {char}\n")
 
-    def do_list(self, line):
+    def do_list(self, line: str):
       """Display info list for selection"""
       char = ""
-      selectIndex = 0
-      table = list()
+      selectIndex: int = 0
+      table:list[list[str]] = list()
 
       while char != "q":
           # Create a table for display from the infoDataList
@@ -224,7 +226,7 @@ class InfolistCLI(cmd.Cmd):
               # Also check if it is the correct type
               nameDesc = item["Name"] + " " + item["Description"]
               if self.isFilter(nameDesc) and self.isType(item["Type"]):  
-                  row = [selectField, item["Name"], item["Type"], item["Description"]]
+                  row: list[str] = [selectField, item["Name"], item["Type"], item["Description"]]
                   table.append(row)
 
           # Sort the display table by Name

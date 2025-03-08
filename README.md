@@ -32,6 +32,8 @@ python3 -m src.main
 
 ## Dist
 
+Python wheel
+
 ```sh
 # dev install to see if it works
 poetry build
@@ -43,4 +45,15 @@ poetry build
 
 # install the whl
 pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.0-py3-none-any.whl --force-reinstall
+```
+
+Static bin
+
+```sh
+# one time setup
+python3 -m pip install pyoxidizer
+
+# Build a static binary for Linux (musl libc)
+pyoxidizer build --target x86_64-unknown-linux-musl
+
 ```
