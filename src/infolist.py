@@ -3,24 +3,26 @@ import yaml
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 from tabulate import tabulate
 from .util import read_unix
 
 class InfolistCLI(cmd.Cmd):
-    prompt = ': '
-    infoDataPath = ""
+    prompt: str = "\ninfolist: "
+    infoDataPath: str = ""
     infoDataList: list[dict[str, str]] = []
-    intro = ""
+    intro: str = ""
     
     # sort by Name by default
-    sortIndex = 1 
+    sortIndex: int = 1 
     
     # Filter row by items in this list, if empty then no filter
     filters: list[str] = list( )
     
     # Types to display, if empty then all types 
     types: list[str] = list()
+    
 
     def preloop(self):
         """Run this method before the command loop starts."""
@@ -47,13 +49,15 @@ class InfolistCLI(cmd.Cmd):
         #
         # self.do_list("")
 
-    def default(self, line: str):
-        print(f"you typed: {line}")
-        return super().default(line)
+    def default(self, line: str) -> None:
+        print(f"Oops!, unknown command: {line}")
+        # return super().default(line)
 
-    def printTypes(self):
+    def printTypes(self) -> None:
         if len(self.types) > 0:
             for i, t in enumerate(self.types):
+                i: int; t: str
+
                 if i == 0:
                     if len(self.types) == 1:
                         print(f"Types: {t}")
@@ -64,9 +68,11 @@ class InfolistCLI(cmd.Cmd):
                 else:
                     print(f", {t}", end="")
     
-    def printFilters(self):
+    def printFilters(self) -> None:
         if len(self.filters) > 0:
             for i, f in enumerate(self.filters):
+                i: int; f: str
+
                 if i == 0:
                     if len(self.filters) == 1:
                         print(f"Filters: {f}")
@@ -77,12 +83,14 @@ class InfolistCLI(cmd.Cmd):
                 else:
                     print(f", {f}", end="")
 
-    def findItem(self, name: str):
+    # TODO using Any here is a hack. I really need to find a way to define a custom data type.
+    def findItem(self, name: str) -> dict[str, Any]:
         """Find an item by name."""
         for item in self.infoDataList:
+            item: dict[str, Any]
             if item["Name"] == name:
                 return item
-        return None
+        return {}
     
     def sortTable(self, table: list[list[str]], selectIndex: int) -> str:
         """Sort the table by Name."""
@@ -106,7 +114,7 @@ class InfolistCLI(cmd.Cmd):
 
         if item["Type"] == "Command":
             # Command to execute
-            command = item["cmd"]["command"]
+            command: str = item["cmd"]["command"]
             args = item["cmd"]["args"]
 
             # Check to see if we should  show the command
