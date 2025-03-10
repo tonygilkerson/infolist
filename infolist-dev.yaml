@@ -1,9 +1,9 @@
 - Name: myls
   Type: Command
   Description: This is my ls command cool
-  cmd:
+  Command:
     showCommand: True
-    command: ls
+    cmd: ls
     args:
       - ls
       - -l
@@ -12,9 +12,9 @@
 - Name: Show Python venv
   Type: Command
   Description: Show active Python venv
-  cmd:
+  Command:
     showCommand: False
-    command: python3 
+    cmd: python3 
     args:
       - python3
       - -c

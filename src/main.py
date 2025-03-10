@@ -1,4 +1,4 @@
-from .infolist import InfolistCLI
+from .infolistcli import InfolistCLI
 
 def main():
     InfolistCLI().cmdloop()

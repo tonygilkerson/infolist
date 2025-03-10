@@ -7,11 +7,13 @@ from typing import Any
 
 from tabulate import tabulate
 from .util import read_unix
+from .infolisttypes import Command, Item
 
 class InfolistCLI(cmd.Cmd):
     prompt: str = "\ninfolist: "
     infoDataPath: str = ""
-    infoDataList: list[dict[str, str]] = []
+    #infoDataList: list[dict[str, Any]] = [] # DEVTODO del me soon
+    infoDataList: list[Item] = []
     intro: str = ""
     
     # sort by Name by default
@@ -39,8 +41,31 @@ class InfolistCLI(cmd.Cmd):
         #
         if os.path.exists(infolistDataPath):
             with open(infolistDataPath, "r") as file:
-                # self.infoDataList = dict( yaml.safe_load(file).items())
-                self.infoDataList = list(yaml.safe_load(file))
+                data: list[dict[str, Any]] = []
+                data = list(yaml.safe_load(file))
+
+                
+                for row in data:
+                    item: Item = Item()
+                    item.name = row["Name"]
+                    item.description = row["Description"]
+
+                    if "Note" in row:
+                        item.note = row["Note"]
+                        item.type = "Note"
+
+                    if "URL" in row:
+                        item.url = row["URL"]
+                        item.type = "Link"
+
+                    if "Command" in row:
+                        item.command = Command()
+                        item.command.cmd = row["Command"]["cmd"]
+                        item.command.args = row["Command"]["args"]
+                        item.command.showCommand = row["Command"]["showCommand"]
+                        item.type = "Command"
+                    self.infoDataList.append(item) 
+
         else:
             print(f"Infolist data file not found: {infolistDataPath}")    
             sys.exit(1)
@@ -83,14 +108,14 @@ class InfolistCLI(cmd.Cmd):
                 else:
                     print(f", {f}", end="")
 
-    # TODO using Any here is a hack. I really need to find a way to define a custom data type.
-    def findItem(self, name: str) -> dict[str, Any]:
+    def findItemByName(self, name: str) -> Item:
         """Find an item by name."""
         for item in self.infoDataList:
-            item: dict[str, Any]
-            if item["Name"] == name:
+            item: Item
+            if item.name == name:
                 return item
-        return {}
+        # empty return
+        return Item()
     
     def sortTable(self, table: list[list[str]], selectIndex: int) -> str:
         """Sort the table by Name."""
@@ -110,15 +135,15 @@ class InfolistCLI(cmd.Cmd):
 
     def runItem(self, name: str):
         """Run an item by name."""
-        item = self.findItem(name)
+        item: Item = self.findItemByName(name)
 
-        if item["Type"] == "Command":
+        if item.type == "Command":
             # Command to execute
-            command: str = item["cmd"]["command"]
-            args = item["cmd"]["args"]
+            command: str = item.command.cmd
+            args: list[str] = item.command.args
 
             # Check to see if we should  show the command
-            if item["cmd"]["showCommand"]:
+            if item.command.showCommand:
                 print(f'\n{" ".join(args)}\n')
             else:
                 print("\n")
@@ -126,12 +151,12 @@ class InfolistCLI(cmd.Cmd):
             # Run the command
             os.execvp(command, args)
 
-        elif item["Type"] == "Link":
-            print(f'\nURL:\n{item["URL"]}\n')
-        elif item["Type"] == "Note":
-            print(f'\nNote:\n\n{item["Note"]}\n')
+        elif item.type == "Link":
+            print(f'\nURL:\n{item.url}\n')
+        elif item.type == "Note":
+            print(f'\nNote:\n\n{item.note}\n')
         else:
-            print(f'Unknown type: {item["Type"]}')
+            print(f'Nothing to do, bad type: {item.type}')
 
     def isFilter(self,content: str):
         """Check if the content is included when filter is applied"""
@@ -154,7 +179,7 @@ class InfolistCLI(cmd.Cmd):
         # Return
         return isIncluded
     
-    def isType(self, rowType: str):
+    def isType(self, itemType: str):
         """Check if the row is included when type filter is applied"""
         # Assume the row is included when the type filter is applied
         isIncluded = True
@@ -163,7 +188,7 @@ class InfolistCLI(cmd.Cmd):
         if len(self.types) > 0:
             isIncluded = False
             for t in self.types:
-                if t.lower() in rowType.lower(): 
+                if t.lower() in itemType.lower(): 
                     isIncluded = True
         # Return
         return isIncluded
@@ -232,9 +257,9 @@ class InfolistCLI(cmd.Cmd):
               
               # Check to see if Name or Description passes the filter
               # Also check if it is the correct type
-              nameDesc = item["Name"] + " " + item["Description"]
-              if self.isFilter(nameDesc) and self.isType(item["Type"]):  
-                  row: list[str] = [selectField, item["Name"], item["Type"], item["Description"]]
+              nameDesc: str = item.name + " " + item.description
+              if self.isFilter(nameDesc) and self.isType(item.type):  
+                  row: list[str] = [selectField, item.name, item.type, item.description]
                   table.append(row)
 
           # Sort the display table by Name
