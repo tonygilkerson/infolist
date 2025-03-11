@@ -1,4 +1,5 @@
 import cmd
+import argparse
 import yaml
 import os
 import sys
@@ -12,7 +13,6 @@ from .infolisttypes import Command, Item
 class InfolistCLI(cmd.Cmd):
     prompt: str = "\ninfolist: "
     infoDataPath: str = ""
-    #infoDataList: list[dict[str, Any]] = [] # DEVTODO del me soon
     infoDataList: list[Item] = []
     intro: str = ""
     
@@ -25,9 +25,36 @@ class InfolistCLI(cmd.Cmd):
     # Types to display, if empty then all types 
     types: list[str] = list()
     
+    def parse_args(self):
+        parser = argparse.ArgumentParser(description="Infolist CLI")
+        parser.add_argument("--sort", type=str, help="Initial sort field (name, type, description)")
+        parser.add_argument("--filter", type=str, nargs='*', help="Initial filters")
+        parser.add_argument("--types", type=str, nargs='*', help="Initial types to display")
+        args = parser.parse_args()
+
+        if args.sort:
+            if args.sort.lower() == "name":
+                self.sortIndex = 1
+            elif args.sort.lower() == "type":
+                self.sortIndex = 2
+            elif args.sort.lower() == "description":
+                self.sortIndex = 3
+            else:
+                print(f"Unknown sort option: {args.sort}")
+
+        if args.filter:
+            self.filters = args.filter
+
+        if args.types:
+            self.types = args.types
 
     def preloop(self):
         """Run this method before the command loop starts."""
+        #
+        # Process command line arguments
+        #
+        self.parse_args()
+        
         #
         # Where is the infolist data?
         #
@@ -65,15 +92,13 @@ class InfolistCLI(cmd.Cmd):
                         item.command.showCommand = row["Command"]["showCommand"]
                         item.type = "Command"
                     self.infoDataList.append(item) 
-
         else:
             print(f"Infolist data file not found: {infolistDataPath}")    
             sys.exit(1)
-        #
-        # do this by default
-        #
-        # self.do_list("")
-
+        
+        # Call do_list() to display the list when the program is first invoked
+        self.do_list("list")
+    
     def default(self, line: str) -> None:
         print(f"Oops!, unknown command: {line}")
         # return super().default(line)
@@ -120,6 +145,8 @@ class InfolistCLI(cmd.Cmd):
     def sortTable(self, table: list[list[str]], selectIndex: int) -> str:
         """Sort the table by Name."""
         # Sort input table by Name before display
+        if len(table) == 0:
+            return f"\n\nNo items to display\n\n"
         table.sort(key=lambda x: x[self.sortIndex])
         table[selectIndex][0] = "=>"
         
@@ -201,7 +228,15 @@ class InfolistCLI(cmd.Cmd):
         os.system('clear')
 
     def do_type(self,line: str):
-        """Select types. Usage: type <type1> <type2> ..."""
+        """
+        Display the current type-filter list or list.  
+        Valid entries for the type-filter list are, command, note, or link
+        
+        Usage: type <type> <type> <type>...
+        
+        If no arguments are specified then the entries in the current type-filter list are displayed.
+        If multiple arguments are specified then all are added to the type-filter list.
+        """
         if line:
             for t in line.split():
                 self.types.append(t)
@@ -223,18 +258,22 @@ class InfolistCLI(cmd.Cmd):
         self.types = list()
 
     def do_sort(self, line: str):
-        """Sort list by Name. Usage: sort [name|type|description]"""
+        """
+        Sort list by Name, Type or Description
+        Usage: sort <sort-by>
+        Where <sort-by> is name|type|description|desc, <sort-by> is case insensitive
+        """
         if line.lower() == "name":
             self.sortIndex = 1
             self.do_list(line)
         elif line.lower() == "type":
             self.sortIndex = 2
             self.do_list(line)
-        elif line.lower() == "description":
+        elif "desc" in line.lower():
             self.sortIndex = 3
             self.do_list(line)
         else:
-            print(f"Unknown sort option: '{line}'")
+            print(f"Oops, unknown sort option: '{line}'")
    
     def do_key(self, line: str):
         """Read a single keypress"""
