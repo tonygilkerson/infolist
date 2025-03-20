@@ -1,5 +1,6 @@
 - Name: myls
   Type: Command
+  Tags: [ "a", "b" ]
   Description: This is my ls command cool
   Command:
     showCommand: True
@@ -11,10 +12,11 @@
 
 - Name: Show Python venv
   Type: Command
+  Tags: [ "b", "c" ]
   Description: Show active Python venv
   Command:
     showCommand: False
-    cmd: python3 
+    cmd: python3
     args:
       - python3
       - -c
@@ -24,10 +26,11 @@
         if prefix:
           print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
         else:
-          print("\nNo Python venv is active, no prefix found\n")  
+          print("\nNo Python venv is active, no prefix found\n")
 
 - Name: ccc-MyNote
   Type: Note
+  Tags: [ "c", "d" ]
   Description: This is a note beans
   Note: This is my note
 
@@ -45,7 +48,7 @@
           Ctrl+Down    Move to workspace below
     Tweaks:
       Fonts:
-        Scaling Factor: 1.25 
+        Scaling Factor: 1.25
 
 - Name: google
   Type: Link
@@ -56,16 +59,3 @@
   Type: Link
   Description: A link to yahoo
   URL: https://www.yahoo.com
-
-
-
-
-
-
-
-
-
-
-
-
-

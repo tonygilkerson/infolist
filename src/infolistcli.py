@@ -77,6 +77,9 @@ class InfolistCLI(cmd.Cmd):
                     item.name = row["Name"]
                     item.description = row["Description"]
 
+                    if "Tags" in row:
+                        item.tags = row["Tags"]
+
                     if "Note" in row:
                         item.note = row["Note"]
                         item.type = "Note"
@@ -153,10 +156,10 @@ class InfolistCLI(cmd.Cmd):
 
         userFriendlyOutput = tabulate(
             table, 
-            ["", "Name", "Type", "Description"], 
+            ["", "Name", "Type", "Tags", "Description"], 
             tablefmt="simple", 
             stralign="left", 
-            maxcolwidths=[None, None, None,45]
+            maxcolwidths=[None, None, None, 45]
         )
         return userFriendlyOutput
 
@@ -297,8 +300,9 @@ class InfolistCLI(cmd.Cmd):
               # Check to see if Name or Description passes the filter
               # Also check if it is the correct type
               nameDesc: str = item.name + " " + item.description
-              if self.isFilter(nameDesc) and self.isType(item.type):  
-                  row: list[str] = [selectField, item.name, item.type, item.description]
+              if self.isFilter(nameDesc) and self.isType(item.type):
+                  tags = ", ".join(item.tags) 
+                  row: list[str] = [selectField, item.name, item.type, tags, item.description]
                   table.append(row)
 
           # Sort the display table by Name
@@ -306,7 +310,8 @@ class InfolistCLI(cmd.Cmd):
 
           # Display the table
           os.system('clear')
-          print('\nType "Enter" to select, "q" to quit, UP and DOWN keys to change selection\n')
+          print('\nType "Enter" to select, "q" to quit, UP and DOWN keys to change selection')
+          print('sort press: n - by Name, t - by Type\n')
           self.printFilters()
           print(outTable)
           
@@ -328,6 +333,16 @@ class InfolistCLI(cmd.Cmd):
           # DOWN
           elif char == "DOWN": 
               selectIndex += 1
+
+          # Sort by name
+          elif char == "n": 
+              self.do_sort("name")
+              break
+
+          # Sort by type
+          elif char == "t": 
+              self.do_sort("type")
+              break
           
           # QUIT
           elif char == 'q':
