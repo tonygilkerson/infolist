@@ -53,12 +53,11 @@ To use `infolist`, as opposed to develope `infolist` then do the following:
 
 ```sh
 
-# You need to be in this project and the python venv active
 
 # Make sure the latest release is installed
-pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
+pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.2-py3-none-any.whl --break-system-packages --user  
 
-# run the app by calling it directly
-export INFOLIST_DATA=~/infolist-data.yaml
+# In a shell with no active python venv
 infolist
+
 ```

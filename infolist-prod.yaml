@@ -1,9 +1,10 @@
 - Name: myls
   Type: Command
+  Tags: [ "a", "b" ]
   Description: This is my ls command cool
-  cmd:
+  Command:
     showCommand: True
-    command: ls
+    cmd: ls
     args:
       - ls
       - -l
@@ -11,10 +12,11 @@
 
 - Name: Show Python venv
   Type: Command
+  Tags: ["util"]
   Description: Show active Python venv
-  cmd:
+  Command:
     showCommand: False
-    command: python3 
+    cmd: python3 
     args:
       - python3
       - -c
@@ -25,11 +27,6 @@
           print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
         else:
           print("\nNo Python venv is active, no prefix found\n")  
-
-- Name: ccc-MyNote
-  Type: Note
-  Description: This is a note beans
-  Note: This is my note
 
 - Name: Keys on Gnome
   Type: Note
@@ -57,7 +54,27 @@
   Description: A link to yahoo
   URL: https://www.yahoo.com
 
+- Name: Dagger Info
+  Type: Note
+  Tags: [ "dagger", "ci" ]
+  Description: Getting started with Dagger
+  Note: |
+    How to point dagger CLI to engine running in the cluster
 
+      # Export the env var
+      # export _EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://<podname>?context=<context>&namespace=<namespace>&container=<container>"
+      export _EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://dagger-dagger-helm-engine-gshhj?namespace=dagger&container=dagger-engine"
+
+      # Verify
+      dagger query <<EOF
+      {
+          container {
+              from(address:"alpine") {
+                  withExec(args: ["uname", "-a"]) { stdout }
+              }
+          }
+      }
+      EOF 
 
 
 
