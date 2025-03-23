@@ -1,0 +1,71 @@
+- Name: myls
+  Type: Command
+  Description: This is my ls command cool
+  cmd:
+    showCommand: True
+    command: ls
+    args:
+      - ls
+      - -l
+      - -a
+
+- Name: Show Python venv
+  Type: Command
+  Description: Show active Python venv
+  cmd:
+    showCommand: False
+    command: python3 
+    args:
+      - python3
+      - -c
+      - |
+        import sys
+        prefix = sys.prefix
+        if prefix:
+          print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
+        else:
+          print("\nNo Python venv is active, no prefix found\n")  
+
+- Name: ccc-MyNote
+  Type: Note
+  Description: This is a note beans
+  Note: This is my note
+
+- Name: Keys on Gnome
+  Type: Note
+  Description: How I have my keys mapped on Gnome
+  Note: |
+    Settings:
+      Devices:
+        Keyboard Shortcuts:
+          Ctrl+Tab     Switch applications
+          Ctrl+`       Switch windows of the same application
+          Ctrl+Space   Show the overview
+          Ctrl+Up      Move to workspace above
+          Ctrl+Down    Move to workspace below
+    Tweaks:
+      Fonts:
+        Scaling Factor: 1.25 
+
+- Name: google
+  Type: Link
+  Description: a link to google
+  URL: https://www.google.com
+
+- Name: yahoo
+  Type: Link
+  Description: A link to yahoo
+  URL: https://www.yahoo.com
+
+
+
+
+
+
+
+
+
+
+
+
+

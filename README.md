@@ -44,16 +44,21 @@ infolist
 poetry build
 
 # install the whl
-pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.0-py3-none-any.whl --force-reinstall
+pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
 ```
 
-Static bin
+## As a User
+
+To use `infolist`, as opposed to develope `infolist` then do the following:
 
 ```sh
-# one time setup
-python3 -m pip install pyoxidizer
 
-# Build a static binary for Linux (musl libc)
-pyoxidizer build --target x86_64-unknown-linux-musl
+# You need to be in this project and the python venv active
 
+# Make sure the latest release is installed
+pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
+
+# run the app by calling it directly
+export INFOLIST_DATA=~/infolist-data.yaml
+infolist
 ```
