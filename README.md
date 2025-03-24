@@ -44,7 +44,7 @@ infolist
 poetry build
 
 # install the whl
-pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
+pip3 install ~/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
 ```
 
 ## As a User
@@ -55,7 +55,7 @@ To use `infolist`, as opposed to develope `infolist` then do the following:
 
 
 # Make sure the latest release is installed
-pip3 install /Users/tonygilkerson/github/tonygilkerson/infolist/dist/infolist-0.1.2-py3-none-any.whl --break-system-packages --user  
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.2-py3-none-any.whl --break-system-packages --user  
 
 # In a shell with no active python venv
 infolist

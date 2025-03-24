@@ -27,9 +27,9 @@ class InfolistCLI(cmd.Cmd):
     
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Infolist CLI")
-        parser.add_argument("--sort", type=str, help="Initial sort field (name, type, description)")
-        parser.add_argument("--filter", type=str, nargs='*', help="Initial filters")
-        parser.add_argument("--types", type=str, nargs='*', help="Initial types to display")
+        parser.add_argument("--sort", "-s", type=str, help="Initial sort field (name, type, description)")
+        parser.add_argument("--filter","-f", type=str, nargs='*', help="Initial filters")
+        parser.add_argument("--types","-t", type=str, nargs='*', help="Initial types to display")
         args = parser.parse_args()
 
         if args.sort:
