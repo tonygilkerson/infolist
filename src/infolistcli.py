@@ -5,6 +5,7 @@ import os
 import sys
 from pathlib import Path
 from typing import Any
+from importlib.metadata import version
 
 from tabulate import tabulate
 from .util import read_unix
@@ -27,10 +28,15 @@ class InfolistCLI(cmd.Cmd):
     
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Infolist CLI")
+        parser.add_argument("--version", "-v", action="store_true", help="Display infolist version")
         parser.add_argument("--sort", "-s", type=str, help="Initial sort field (name, type, description)")
         parser.add_argument("--filter","-f", type=str, nargs='*', help="Initial filters")
         parser.add_argument("--types","-t", type=str, nargs='*', help="Initial types to display")
         args = parser.parse_args()
+
+        if args.version:
+            print(f"infolist version: {self.get_version()}")
+            sys.exit(0)
 
         if args.sort:
             if args.sort.lower() == "name":
@@ -105,6 +111,14 @@ class InfolistCLI(cmd.Cmd):
     def default(self, line: str) -> None:
         print(f"Oops!, unknown command: {line}")
         # return super().default(line)
+
+    def get_version(self) -> str:
+        """Retrieve the version of the infolist package."""
+        try:
+            return version("infolist")
+        except Exception as e:
+            print(f"Error retrieving version: {e}")
+            return "dev"
 
     def printTypes(self) -> None:
         if len(self.types) > 0:
@@ -226,6 +240,10 @@ class InfolistCLI(cmd.Cmd):
     def do_q(self, line: str):
         """Quit and exit the CLI"""
         return True
+    def do_version(self, line: str):
+        """Print the version of InfoList"""
+        print(f"infolist version: {self.get_version()}")
+
     def do_cc(self, line: str):
         """Clear the screen"""
         os.system('clear')

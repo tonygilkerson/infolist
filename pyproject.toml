@@ -1,6 +1,6 @@
 [project]
 name = "infolist"
-version = "0.1.2"
+version = "0.1.3"
 description = "A simple CLI for querying the Info List"
 authors = [
     {name = "Tony Gilkerson",email = "tonygilkerson@yahoo.com"}
