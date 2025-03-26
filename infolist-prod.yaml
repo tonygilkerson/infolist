@@ -76,6 +76,16 @@
       }
       EOF 
 
+- Name: git Info
+  Type: Note
+  Tags: [ "git", "bash" ]
+  Description: Info about git
+  Note: |
+    # Show config
+    git config --list --show-origin 
+
+    # Show signature on the last commit
+    git log --show-signature -1
 
 
 
