@@ -35,27 +35,27 @@ python3 -m src.main
 Python wheel
 
 ```sh
+. .venv/bin/activate # if not done alread
+
 # dev install to see if it works
 poetry build
 poetry install
 infolist
 
-# Actual install 
+# build for dist
 poetry build
-
-# install the whl
-pip3 install ~/tonygilkerson/infolist/dist/infolist-0.1.1-py3-none-any.whl --force-reinstall
 ```
 
 ## As a User
 
-To use `infolist`, as opposed to develope `infolist` then do the following:
+To use `infolist`, as opposed to develop `infolist` then do the following:
 
 ```sh
-
-
 # Make sure the latest release is installed
-pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.2-py3-none-any.whl --break-system-packages --user  
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.3-py3-none-any.whl --user
+
+# or if not using a venv  
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.3-py3-none-any.whl --break-system-packages --user  
 
 # In a shell with no active python venv
 infolist
