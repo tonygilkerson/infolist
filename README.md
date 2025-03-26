@@ -35,7 +35,7 @@ python3 -m src.main
 Python wheel
 
 ```sh
-. .venv/bin/activate # if not done alread
+. .venv/bin/activate # if not done already
 
 # dev install to see if it works
 poetry build
