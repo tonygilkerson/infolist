@@ -52,10 +52,10 @@ To use `infolist`, as opposed to develop `infolist` then do the following:
 
 ```sh
 # Make sure the latest release is installed
-pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.4-py3-none-any.whl --user
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.5-py3-none-any.whl --user
 
 # or if not using a venv  
-pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.4-py3-none-any.whl --break-system-packages --user  
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.5-py3-none-any.whl --break-system-packages --user  
 
 # In a shell with no active python venv
 infolist
