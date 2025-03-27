@@ -173,7 +173,7 @@ class InfolistCLI(cmd.Cmd):
             ["", "Name", "Type", "Tags", "Description"], 
             tablefmt="simple", 
             stralign="left", 
-            maxcolwidths=[None, None, None, 45]
+            maxcolwidths=[None, None, None, None, 40]
         )
         return userFriendlyOutput
 

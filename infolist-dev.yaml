@@ -31,8 +31,8 @@
 - Name: ccc-MyNote
   Type: Note
   Tags: [ "c", "d" ]
-  Description: This is a note beans
-  Note: This is my note
+  Description: This is my note, and it has a long description. So long that I will need to wrap the columns on this one so this is use as a test.
+  Note: This is a note
 
 - Name: Keys on Gnome
   Type: Note
