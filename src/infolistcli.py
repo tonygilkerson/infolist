@@ -315,11 +315,13 @@ class InfolistCLI(cmd.Cmd):
 
           for item in self.infoDataList:
               
-              # Check to see if Name or Description passes the filter
+              # Filter content is name, description and tags
+              tags = ", ".join(item.tags)
+              content: str = item.name + " " + item.description + " " + tags
+
+              # Check to see if content passes the filter
               # Also check if it is the correct type
-              nameDesc: str = item.name + " " + item.description
-              if self.isFilter(nameDesc) and self.isType(item.type):
-                  tags = ", ".join(item.tags) 
+              if self.isFilter(content) and self.isType(item.type):
                   row: list[str] = [selectField, item.name, item.type, tags, item.description]
                   table.append(row)
 
