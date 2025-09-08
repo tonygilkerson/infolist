@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/infolist/__init__.py
+src/infolist/infolistcli.py
+src/infolist/infolisttypes.py
+src/infolist/main.py
+src/infolist/util.py
+src/infolist.egg-info/PKG-INFO
+src/infolist.egg-info/SOURCES.txt
+src/infolist.egg-info/dependency_links.txt
+src/infolist.egg-info/entry_points.txt
+src/infolist.egg-info/requires.txt
+src/infolist.egg-info/top_level.txt

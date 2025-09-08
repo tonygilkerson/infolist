@@ -1,3 +1,13 @@
+Metadata-Version: 2.4
+Name: infolist
+Version: 0.1.7
+Summary: A simple CLI for querying the Info List
+Author-email: Tony Gilkerson <tonygilkerson@yahoo.com>
+Requires-Python: >3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: tabulate>=0.9.0
+
 # info
 
 Command line tool to search my info
@@ -22,7 +32,7 @@ source .env
 ## Dev
 
 ```sh
-python3 -m infolist.main
+python3 -m src.main
 ```
 
 ## Dist
