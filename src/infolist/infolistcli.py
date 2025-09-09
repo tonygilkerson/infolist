@@ -1,11 +1,11 @@
-import cmd
-import argparse
-import yaml
 import os
 import sys
+import cmd
+import argparse
 from pathlib import Path
-from typing import Any
 from importlib.metadata import version
+import yaml
+from typing import Any
 
 from tabulate import tabulate
 from .util import read_unix
@@ -18,20 +18,31 @@ class InfolistCLI(cmd.Cmd):
     intro: str = ""
     
     # sort by Name by default
-    sortIndex: int = 1 
+    sortIndex: int = 1
     
     # Filter row by items in this list, if empty then no filter
-    filters: list[str] = list( )
+    filters: list[str] = list()
     
-    # Types to display, if empty then all types 
+    # Types to display, if empty then all types
     types: list[str] = list()
     
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Infolist CLI")
-        parser.add_argument("--version", "-v", action="store_true", help="Display infolist version")
-        parser.add_argument("--sort", "-s", type=str, help="Initial sort field (name, type, description)")
-        parser.add_argument("--filter","-f", type=str, nargs='*', help="Initial filters")
-        parser.add_argument("--types","-t", type=str, nargs='*', help="Initial types to display")
+        parser.add_argument(
+            "--version", "-v", action="store_true", help="Display infolist version"
+        )
+        parser.add_argument(
+            "--sort",
+            "-s",
+            type=str,
+            help="Initial sort field (name, type, description)",
+        )
+        parser.add_argument(
+            "--filter", "-f", type=str, nargs="*", help="Initial filters"
+        )
+        parser.add_argument(
+            "--types", "-t", type=str, nargs="*", help="Initial types to display"
+        )
         args = parser.parse_args()
 
         if args.version:
@@ -64,10 +75,14 @@ class InfolistCLI(cmd.Cmd):
         #
         # Where is the infolist data?
         #
-        infolistDataPath = os.getenv("INFOLIST_DATA", str(Path.home()) + "/infolist-data.yaml")
+        infolistDataPath = os.getenv(
+            "INFOLIST_DATA", str(Path.home()) + "/infolist-data.yaml"
+        )
 
         self.infoDataPath = infolistDataPath
-        self.intro = f'\nEnter a command, type "help" or "q" to quit. Using ({infolistDataPath})'
+        self.intro = (
+            f'\nEnter a command, type "help" or "q" to quit. Using ({infolistDataPath})'
+        )
 
         #
         # Load infolist data
@@ -100,9 +115,9 @@ class InfolistCLI(cmd.Cmd):
                         item.command.args = row["Command"]["args"]
                         item.command.showCommand = row["Command"]["showCommand"]
                         item.type = "Command"
-                    self.infoDataList.append(item) 
+                    self.infoDataList.append(item)
         else:
-            print(f"Infolist data file not found: {infolistDataPath}")    
+            print(f"Infolist data file not found: {infolistDataPath}")
             sys.exit(1)
         
         # Call do_list() to display the list when the program is first invoked
@@ -123,7 +138,8 @@ class InfolistCLI(cmd.Cmd):
     def printTypes(self) -> None:
         if len(self.types) > 0:
             for i, t in enumerate(self.types):
-                i: int; t: str
+                i: int
+                t: str
 
                 if i == 0:
                     if len(self.types) == 1:
@@ -138,7 +154,8 @@ class InfolistCLI(cmd.Cmd):
     def printFilters(self) -> None:
         if len(self.filters) > 0:
             for i, f in enumerate(self.filters):
-                i: int; f: str
+                i: int
+                f: str
 
                 if i == 0:
                     if len(self.filters) == 1:
@@ -159,21 +176,21 @@ class InfolistCLI(cmd.Cmd):
         # empty return
         return Item()
     
-    def sortTable(self, table: list[list[str]], selectIndex: int) -> str:
+    def sortTable(self, table: list[list[str]], select_index: int) -> str:
         """Sort the table by Name."""
         # Sort input table by Name before display
         if len(table) == 0:
             return f"\n\nNo items to display\n\n"
         table.sort(key=lambda x: x[self.sortIndex])
-        table[selectIndex][0] = "=>"
+        table[select_index][0] = "=>"
         
 
         userFriendlyOutput = tabulate(
-            table, 
-            ["", "Name", "Type", "Tags", "Description"], 
-            tablefmt="simple", 
-            stralign="left", 
-            maxcolwidths=[None, None, None, None, 40]
+            table,
+            ["", "Name", "Type", "Tags", "Description"],
+            tablefmt="simple",
+            stralign="left",
+            maxcolwidths=[None, None, None, None, 40],
         )
         return userFriendlyOutput
 
@@ -188,7 +205,7 @@ class InfolistCLI(cmd.Cmd):
 
             # Check to see if we should  show the command
             if item.command.showCommand:
-                print(f'\n{" ".join(args)}\n')
+                print(f"\n{' '.join(args)}\n")
             else:
                 print("\n")
 
@@ -196,13 +213,13 @@ class InfolistCLI(cmd.Cmd):
             os.execvp(command, args)
 
         elif item.type == "Link":
-            print(f'\nURL:\n{item.url}\n')
+            print(f"\nURL:\n{item.url}\n")
         elif item.type == "Note":
-            print(f'\nNote:\n\n{item.note}\n')
+            print(f"\nNote:\n\n{item.note}\n")
         else:
-            print(f'Nothing to do, bad type: {item.type}')
+            print(f"Nothing to do, bad type: {item.type}")
 
-    def isFilter(self,content: str):
+    def isFilter(self, content: str):
         """Check if the content is included when filter is applied"""
         # The content is expected to be things like Name or Description
        
@@ -214,12 +231,12 @@ class InfolistCLI(cmd.Cmd):
             isIncluded = False
             for f in self.filters:
                 # a -filter means if content does NOT contain it
-                if f.startswith("-"):                  
-                  if f[1:].lower() not in content.lower(): 
-                      isIncluded = True
+                if f.startswith("-"):
+                    if f[1:].lower() not in content.lower():
+                        isIncluded = True
                 else:
-                  if f.lower() in content.lower(): 
-                      isIncluded = True
+                    if f.lower() in content.lower():
+                        isIncluded = True
         # Return
         return isIncluded
     
@@ -232,7 +249,7 @@ class InfolistCLI(cmd.Cmd):
         if len(self.types) > 0:
             isIncluded = False
             for t in self.types:
-                if t.lower() in itemType.lower(): 
+                if t.lower() in itemType.lower():
                     isIncluded = True
         # Return
         return isIncluded
@@ -246,11 +263,11 @@ class InfolistCLI(cmd.Cmd):
 
     def do_cc(self, line: str):
         """Clear the screen"""
-        os.system('clear')
+        os.system("clear")
 
-    def do_type(self,line: str):
+    def do_type(self, line: str):
         """
-        Display the current type-filter list or list.  
+        Display the current type-filter list or list.
         Valid entries for the type-filter list are, command, note, or link
         
         Usage: type <type> <type> <type>...
@@ -263,18 +280,18 @@ class InfolistCLI(cmd.Cmd):
                 self.types.append(t)
         self.printTypes()
 
-    def do_filter(self,line: str):
+    def do_filter(self, line: str):
         """Add filters. Usage: filter <filter1> <filter2> ... Or will display current filters if no args"""
         if line:
             for s in line.split():
                 self.filters.append(s)
         self.printFilters()
 
-    def do_clearfilters(self,line: str):
+    def do_clearfilters(self, line: str):
         """Clear filters, aka no filter, show all"""
         self.filters = list()
 
-    def do_cleartypes(self,line: str):
+    def do_cleartypes(self, line: str):
         """Clear types, aka show all types"""
         self.types = list()
 
@@ -303,78 +320,84 @@ class InfolistCLI(cmd.Cmd):
         print(f"you typed: {char}\n")
 
     def do_list(self, line: str):
-      """Display info list for selection"""
-      char = ""
-      selectIndex: int = 0
-      table:list[list[str]] = list()
+        """Display info list for selection"""
+        char = ""
+        select_index: int = 0
+        table: list[list[str]] = list()
 
-      while char != "q":
-          # Create a table for display from the infoDataList
-          table = []
-          selectField = ""
+        while char != "q":
+            # Create a table for display from the infoDataList
+            table = []
+            selectField = ""
 
-          for item in self.infoDataList:
-              
-              # Filter content is name, description and tags
-              tags = ", ".join(item.tags)
-              content: str = item.name + " " + item.description + " " + tags
+            for item in self.infoDataList:
+                
+                # Filter content is name, description and tags
+                tags = ", ".join(item.tags)
+                content: str = item.name + " " + item.description + " " + tags
 
-              # Check to see if content passes the filter
-              # Also check if it is the correct type
-              if self.isFilter(content) and self.isType(item.type):
-                  row: list[str] = [selectField, item.name, item.type, tags, item.description]
-                  table.append(row)
+                # Check to see if content passes the filter
+                # Also check if it is the correct type
+                if self.isFilter(content) and self.isType(item.type):
+                    row: list[str] = [
+                        selectField,
+                        item.name,
+                        item.type,
+                        tags,
+                        item.description,
+                    ]
+                    table.append(row)
 
-          # Sort the display table by Name
-          outTable = self.sortTable(table, selectIndex)
+            # Sort the display table by Name
+            outTable = self.sortTable(table, select_index)
 
-          # Display the table
-          os.system('clear')
-          print('\nType "Enter" to select, "q" to quit, UP and DOWN keys to change selection')
-          print('sort press: n - by Name, t - by Type\n')
-          self.printFilters()
-          print(outTable)
-          
-          # 
-          # User input
-          #
-          char = read_unix()
+            # Display the table
+            os.system("clear")
+            print(
+                '\nType "Enter" to select, "q" to quit, UP and DOWN keys to change selection'
+            )
+            print("sort press: n - by Name, t - by Type\n")
+            self.printFilters()
+            print(outTable)
+            
+            # 
+            # User input
+            #
+            char = read_unix()
 
-          # ENTER
-          if char == '\r': 
-              selectedItemName = table[selectIndex][1]
-              self.runItem(selectedItemName)
-              break
-          
-          # UP
-          elif char == "UP": 
-              selectIndex -= 1
+            # ENTER
+            if char == "\r":
+                selectedItemName = table[select_index][1]
+                self.runItem(selectedItemName)
+                break
+            
+            # UP
+            elif char == "UP":
+                select_index -= 1
 
-          # DOWN
-          elif char == "DOWN": 
-              selectIndex += 1
+            # DOWN
+            elif char == "DOWN":
+                select_index += 1
 
-          # Sort by name
-          elif char == "n": 
-              self.do_sort("name")
-              break
+            # Sort by name
+            elif char == "n":
+                self.do_sort("name")
+                break
 
-          # Sort by type
-          elif char == "t": 
-              self.do_sort("type")
-              break
-          
-          # QUIT
-          elif char == 'q':
-              break
+            # Sort by type
+            elif char == "t":
+                self.do_sort("type")
+                break
+            
+            # QUIT
+            elif char == "q":
+                break
 
-          
-          # bounds check
-          if selectIndex < 0:
-              selectIndex = len(self.infoDataList) - 1 # just wrap around to the bottom
-          elif selectIndex >= len(self.infoDataList):
-              selectIndex = 0 # just rap around to the top
-
-
-
-
+            
+            # bounds check
+            if select_index < 0:
+                select_index = (
+                    len(self.infoDataList) - 1
+                )  # just wrap around to the bottom
+            elif select_index >= len(self.infoDataList):
+                select_index = 0  # just rap around to the top

@@ -48,3 +48,9 @@ pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.7-py3-none-any.wh
 infolist --version
 
 ```
+
+## Dagger
+
+```sh
+dacongger -m github.com/act3-ai/dagger/python@v0.1.4 call --src="." --netrc=env:NETRC mypy
+`   `

@@ -32,7 +32,7 @@ source .env
 ## Dev
 
 ```sh
-python3 -m src.main
+python3 -m infolist.main
 ```
 
 ## Dist
