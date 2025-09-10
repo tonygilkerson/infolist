@@ -1,0 +1,79 @@
+---
+shell: dagger shell
+---
+
+# Dagger CI for Python
+
+This notebook will help run Dagger CI for your python project.
+
+## Setup
+
+Before you get started you will need to
+
+* Install Docker
+* Install Dagger
+* Install the Runme extension
+
+### Verify Setup
+
+Verify that Runme and Dagger are working by running the following cell
+
+```sh
+container | 
+from busybox | 
+with-exec echo "Hello World" | 
+stdout
+```
+
+Verify that this notebook has access to your environment variables
+
+```sh
+container | 
+from busybox | 
+with-exec echo "TESTVAR contains: $TESTVAR" | 
+stdout
+```
+
+## Feature CI
+
+The ACT3 Dagger modules offer a variety of functions for feature development, such as linting and running unit tests.
+
+To see all available functions, use the `--help` flag. For a complete list of functions and their descriptions, you can also view the web version of the documentation on the [daggerverse](https://daggerverse.dev/mod/github.com/act3-ai/dagger/python). The source code for these modules is hosted on [Github](https://github.com/act3-ai/dagger).
+
+```sh
+github.com/act3-ai/dagger/python@v0.1.5 "." | .help
+```
+
+### Lint
+
+The `lint` function will execute the following.
+
+* ruff-check
+* ruff-format
+* mypy
+* pylint
+* pyright
+
+Use ".help lint" for more information on.
+
+```sh
+github.com/act3-ai/dagger/python@v0.1.5 "."  | lint | .help
+```
+
+Run `lint` on this project to see how you are doing!
+
+```sh
+github.com/act3-ai/dagger/python@v0.1.5 "."  | lint
+```
+
+## Release CI
+
+The overall flow is to call `check`, `release`, and `create-gitlab` function. 
+
+```sh {"terminalRows":"21"}
+github.com/act3-ai/dagger/release "." | .help
+```
+
+```sh {"terminalRows":"29"}
+github.com/act3-ai/dagger/release "." | python | .help
+```

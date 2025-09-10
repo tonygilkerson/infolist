@@ -31,7 +31,7 @@ dagger core container \
     stdout
 ```
 
-### Python
+### Python CI
 
 The ACT3 Dagger module used for python CI is `github.com/act3-ai/dagger/python`.  For detail help use the `--help` flag or run the cell below. A web version of the help is also mirrored in the [daggerverse](https://daggerverse.dev/mod/github.com/act3-ai/dagger/python)
 
