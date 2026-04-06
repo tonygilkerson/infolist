@@ -1,3 +1,5 @@
+"""My Infolist"""
+from typing import Any
 import os
 import sys
 import cmd
@@ -5,7 +7,6 @@ import argparse
 from pathlib import Path
 from importlib.metadata import version
 import yaml
-from typing import Any
 
 from tabulate import tabulate
 from .util import read_unix
@@ -16,16 +17,16 @@ class InfolistCLI(cmd.Cmd):
     infoDataPath: str = ""
     infoDataList: list[Item] = []
     intro: str = ""
-    
+
     # sort by Name by default
     sortIndex: int = 1
-    
+
     # Filter row by items in this list, if empty then no filter
     filters: list[str] = list()
-    
+
     # Types to display, if empty then all types
     types: list[str] = list()
-    
+
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Infolist CLI")
         parser.add_argument(
@@ -71,7 +72,7 @@ class InfolistCLI(cmd.Cmd):
         # Process command line arguments
         #
         self.parse_args()
-        
+
         #
         # Where is the infolist data?
         #
@@ -88,11 +89,10 @@ class InfolistCLI(cmd.Cmd):
         # Load infolist data
         #
         if os.path.exists(infolistDataPath):
-            with open(infolistDataPath, "r") as file:
+            with open(infolistDataPath, "r", encoding="utf-8") as file:
                 data: list[dict[str, Any]] = []
                 data = list(yaml.safe_load(file))
 
-                
                 for row in data:
                     item: Item = Item()
                     item.name = row["Name"]
@@ -120,8 +120,8 @@ class InfolistCLI(cmd.Cmd):
             print(f"Infolist data file not found: {infolistDataPath}")
             sys.exit(1)
         
-        # Call do_list() to display the list when the program is first invoked
-        self.do_list("list")
+        # Call do_ll() to display the list when the program is first invoked
+        self.do_ll("list")
     
     def default(self, line: str) -> None:
         print(f"Oops!, unknown command: {line}")
@@ -129,11 +129,7 @@ class InfolistCLI(cmd.Cmd):
 
     def get_version(self) -> str:
         """Retrieve the version of the infolist package."""
-        try:
-            return version("infolist")
-        except Exception as e:
-            print(f"Error retrieving version: {e}")
-            return "dev"
+        return version("infolist")
 
     def printTypes(self) -> None:
         if len(self.types) > 0:
@@ -150,7 +146,7 @@ class InfolistCLI(cmd.Cmd):
                     print(f", {t}\n")
                 else:
                     print(f", {t}", end="")
-    
+
     def printFilters(self) -> None:
         if len(self.filters) > 0:
             for i, f in enumerate(self.filters):
@@ -175,7 +171,7 @@ class InfolistCLI(cmd.Cmd):
                 return item
         # empty return
         return Item()
-    
+
     def sortTable(self, table: list[list[str]], select_index: int) -> str:
         """Sort the table by Name."""
         # Sort input table by Name before display
@@ -183,7 +179,7 @@ class InfolistCLI(cmd.Cmd):
             return f"\n\nNo items to display\n\n"
         table.sort(key=lambda x: x[self.sortIndex])
         table[select_index][0] = "=>"
-        
+    
 
         userFriendlyOutput = tabulate(
             table,
@@ -222,7 +218,6 @@ class InfolistCLI(cmd.Cmd):
     def isFilter(self, content: str):
         """Check if the content is included when filter is applied"""
         # The content is expected to be things like Name or Description
-       
         # Assume the content is included when the filter is applied
         isIncluded = True
 
@@ -239,7 +234,7 @@ class InfolistCLI(cmd.Cmd):
                         isIncluded = True
         # Return
         return isIncluded
-    
+
     def isType(self, itemType: str):
         """Check if the row is included when type filter is applied"""
         # Assume the row is included when the type filter is applied
@@ -280,18 +275,18 @@ class InfolistCLI(cmd.Cmd):
                 self.types.append(t)
         self.printTypes()
 
-    def do_filter(self, line: str):
+    def do_f(self, line: str):
         """Add filters. Usage: filter <filter1> <filter2> ... Or will display current filters if no args"""
         if line:
             for s in line.split():
                 self.filters.append(s)
         self.printFilters()
 
-    def do_clearfilters(self, line: str):
+    def do_cf(self, line: str):
         """Clear filters, aka no filter, show all"""
         self.filters = list()
 
-    def do_cleartypes(self, line: str):
+    def do_ct(self, line: str):
         """Clear types, aka show all types"""
         self.types = list()
 
@@ -303,23 +298,23 @@ class InfolistCLI(cmd.Cmd):
         """
         if line.lower() == "name":
             self.sortIndex = 1
-            self.do_list(line)
+            self.do_ll(line)
         elif line.lower() == "type":
             self.sortIndex = 2
-            self.do_list(line)
+            self.do_ll(line)
         elif "desc" in line.lower():
             self.sortIndex = 3
-            self.do_list(line)
+            self.do_ll(line)
         else:
             print(f"Oops, unknown sort option: '{line}'")
-   
+
     def do_key(self, line: str):
         """Read a single keypress"""
         print("\nPress any key: ")
         char = read_unix()
         print(f"you typed: {char}\n")
 
-    def do_list(self, line: str):
+    def do_ll(self, line: str):
         """Display info list for selection"""
         char = ""
         select_index: int = 0
@@ -331,7 +326,7 @@ class InfolistCLI(cmd.Cmd):
             selectField = ""
 
             for item in self.infoDataList:
-                
+
                 # Filter content is name, description and tags
                 tags = ", ".join(item.tags)
                 content: str = item.name + " " + item.description + " " + tags
@@ -359,8 +354,8 @@ class InfolistCLI(cmd.Cmd):
             print("sort press: n - by Name, t - by Type\n")
             self.printFilters()
             print(outTable)
-            
-            # 
+
+            #
             # User input
             #
             char = read_unix()
@@ -370,7 +365,7 @@ class InfolistCLI(cmd.Cmd):
                 selectedItemName = table[select_index][1]
                 self.runItem(selectedItemName)
                 break
-            
+
             # UP
             elif char == "UP":
                 select_index -= 1
@@ -388,12 +383,11 @@ class InfolistCLI(cmd.Cmd):
             elif char == "t":
                 self.do_sort("type")
                 break
-            
+
             # QUIT
             elif char == "q":
                 break
 
-            
             # bounds check
             if select_index < 0:
                 select_index = (

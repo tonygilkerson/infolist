@@ -22,7 +22,8 @@ source .env
 ## Dev
 
 ```sh
-python3 -m infolist.main
+# python -m infolist.main
+uv run infolist
 ```
 
 ## Dist
@@ -42,15 +43,9 @@ To use `infolist`, as opposed to develop `infolist` then do the following:
 
 ```sh
 # In a new terminal window not in this venv
-pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.7-py3-none-any.whl --user --break-system-packages
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.8-py3-none-any.whl --user --break-system-packages
 
 # Verify
 infolist --version
 
 ```
-
-## Dagger
-
-```sh
-dacongger -m github.com/act3-ai/dagger/python@v0.1.4 call --src="." --netrc=env:NETRC mypy
-`   `
