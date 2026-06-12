@@ -11,12 +11,11 @@ brew install uv
 # This will create the .venv directory
 uv sync
 
-## Dev Env
-printf "INFOLIST_DATA=./infolist-dev.yaml\n" >> .env
-
 # Activate the environment
 source .venv/bin/activate
-source .env
+
+# Should run automatically
+direnv allow 
 ```
 
 ## Dev
@@ -43,7 +42,7 @@ To use `infolist`, as opposed to develop `infolist` then do the following:
 
 ```sh
 # In a new terminal window not in this venv
-pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.8-py3-none-any.whl --user --break-system-packages
+pip3 install ~/github/tonygilkerson/infolist/dist/infolist-0.1.9-py3-none-any.whl --user --break-system-packages
 
 # Verify
 infolist --version

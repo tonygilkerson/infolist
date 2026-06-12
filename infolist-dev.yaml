@@ -1,41 +1,10 @@
-- Name: myls
-  Type: Command
-  Tags: [ "a", "b" ]
-  Description: This is my ls command cool
-  Command:
-    showCommand: True
-    cmd: ls
-    args:
-      - ls
-      - -l
-      - -a
-
-- Name: Show Python venv
-  Type: Command
-  Tags: [ "b", "c" ]
-  Description: Show active Python venv
-  Command:
-    showCommand: False
-    cmd: python3
-    args:
-      - python3
-      - -c
-      - |
-        import sys
-        prefix = sys.prefix
-        if prefix:
-          print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
-        else:
-          print("\nNo Python venv is active, no prefix found\n")
-
-- Name: ccc-MyNote
-  Type: Note
-  Tags: [ "c", "d" ]
+- Name: MyNote
+  Tags: [ "ttt", "d" ]
   Description: This is my note, and it has a long description. So long that I will need to wrap the columns on this one so this is use as a test.
   Note: This is a note
 
 - Name: Keys on Gnome
-  Type: Note
+  Tags: [ "a", "d" ]
   Description: How I have my keys mapped on Gnome
   Note: |
     Settings:
@@ -51,11 +20,11 @@
         Scaling Factor: 1.25
 
 - Name: google
-  Type: Link
+  Tags: [ "c", "x" ]
   Description: a link to google
-  URL: https://www.google.com
+  Note: https://www.google.com
 
 - Name: yahoo
-  Type: Link
+  Tags: [ "c", "d" ]
   Description: A link to yahoo
-  URL: https://www.yahoo.com
+  Note: https://www.yahoo.com

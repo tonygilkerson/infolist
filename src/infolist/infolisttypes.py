@@ -5,11 +5,6 @@ class Command:
 
 class Item:
     name: str = ""
-    type: str = ""
     tags: list[str] = list()
     description: str = ""
     note: str = ""
-    url: str = ""
-    command: Command = Command()
-
-
