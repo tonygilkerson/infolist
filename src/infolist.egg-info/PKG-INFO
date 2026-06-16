@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: infolist
-Version: 0.1.10
+Version: 0.1.11
 Summary: A simple CLI for querying the Info List
 Author-email: Tony Gilkerson <tonygilkerson@yahoo.com>
 Requires-Python: >3.9

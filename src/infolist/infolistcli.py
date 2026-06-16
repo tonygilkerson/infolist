@@ -233,7 +233,8 @@ class InfolistCLI(cmd.Cmd):
             if char == "\r":
                 selectedItemName = table[select_index][1]
                 self.show_item(selectedItemName)
-                break
+                # Force exit once we have displayed the item
+                sys.exit(0)
 
             # UP
             elif char == "UP":
