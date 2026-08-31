@@ -1,35 +1,41 @@
-- Name: myls
-  Type: Command
-  Tags: [ "a", "b" ]
-  Description: This is my ls command cool
-  Command:
-    showCommand: True
-    cmd: ls
-    args:
-      - ls
-      - -l
-      - -a
+- Name: InfoList Version
+  Tags: ["notag"]
+  Description: Infolist Version
+  Note: |
+    InfoList Version: 0.1.0
 
-- Name: Show Python venv
-  Type: Command
-  Tags: ["util"]
-  Description: Show active Python venv
-  Command:
-    showCommand: False
-    cmd: python3 
-    args:
-      - python3
-      - -c
-      - |
-        import sys
-        prefix = sys.prefix
-        if prefix:
-          print(f"\nPython venv is ACTIVE with prefix: {prefix}\n")
-        else:
-          print("\nNo Python venv is active, no prefix found\n")  
+- Name: Docker Commands
+  Tags: ["notag"]
+  Description: A few good docker/podman commands
+  Note: |
+    # podman ps --filter "ancestor=<image name or id>"
+    podman ps --filter "ancestor=activemq"
+
+    # podman images --filter "reference=<repo:tag>"
+    podman images --filter "reference=activemq"
+    
+- Name: ASC Wiki Home
+  Tags: ["wiki"]
+  Description: ASC Wiki Home
+  Note: https://rs-glu.vdl.afrl.af.mil/groups/rs/software/autonomy-execution/aircraft-maneuver-service/-/wikis/home
+
+- Name: Running ACS
+  Tags: ["wiki"]
+  Description: Instruction for running ACS on the WIKI
+  Note: https://rs-glu.vdl.afrl.af.mil/groups/rs/software/autonomy-execution/aircraft-maneuver-service/-/wikis/Running-ACS
+
+- Name: Repo Creation Guide
+  Tags: ["wiki"]
+  Description: Repo Creation Guide on ASC Wiki
+  Note: https://rs-glu.vdl.afrl.af.mil/groups/rs/software/autonomy-execution/aircraft-maneuver-service/-/wikis/Repo-Creation-Guide
+
+- Name: ASC DevOps Issue Board
+  Tags: ["notag"]
+  Description: ASC DevOps Issue Board
+  Note: https://rs-glu.vdl.afrl.af.mil/rs/software/autonomy-execution/aircraft-maneuver-service/acs-issues/-/boards/147?label_name[]=devops
 
 - Name: Keys on Gnome
-  Type: Note
+  Tags: ["notag"]
   Description: How I have my keys mapped on Gnome
   Note: |
     Settings:
@@ -40,45 +46,183 @@
           Ctrl+Space   Show the overview
           Ctrl+Up      Move to workspace above
           Ctrl+Down    Move to workspace below
+          Ctrl+Q       Close window
+          LaunchA(f3)  Hide all normal windows
+        Custom Shortcuts:
+          Ctrl+L       gnome-terminal -x bash -c "/home/tgilkerson/.local/bin/infolist; exec bash"
     Tweaks:
       Fonts:
-        Scaling Factor: 1.25 
+        Scaling Factor: 1.25
 
-- Name: google
-  Type: Link
-  Description: a link to google
-  URL: https://www.google.com
+- Name: rke2 info
+  Tags: ["notag"]
+  Description: some good rke2 info
+  Note: |
+    # Ref:
+    https://docs.rke2.io/install/quickstart
 
-- Name: yahoo
-  Type: Link
-  Description: A link to yahoo
-  URL: https://www.yahoo.com
+    # Enable/disable the rke2-server service
+    systemctl enable rke2-server.service
+    systemctl disable rke2-server.service
+
+    # Start/stop the service
+    systemctl start rke2-server.service
+    systemctl stop rke2-server.service
+
+    # Follow the logs, if you like
+    journalctl -u rke2-server -f
+
+    # Additional utilities will be installed at
+    /var/lib/rancher/rke2/bin/
+
+    # A kubeconfig file will be written to
+    /etc/rancher/rke2/rke2.yaml
+
+- Name: jfrog artifactory notes
+  Tags: [ "artifactory", "podman" ]
+  Description: How to run jfrog in a local container for development
+  Note: |
+    # VDL
+    https://rs-art.vdl.afrl.af.mil/
+
+    # Logon to artifactory on VDL, for artifactory-identity-token search for "Artifactory" in vault
+    podman login rs-art.vdl.afrl.af.mil/rs-dev-docker -u tony.gilkerson -p <artifactory-identity-token>
+
+    # DLE
+    https://artifactory.dle.afrl.af.mil/ui/repos/tree/General/
+
+    # Logon to artifactory on DLE, for artifactory-identity-token search for "Artifactory" in vault
+    podman login artifactory.dle.afrl.af.mil/rs-dev-docker -u anthony.gilkerson -p <artifactory-identity-token>
+
+    #
+    # Running as a local service for dev and testing
+    #
+    podman network create --driver bridge conan-training
+    podman run --name artifactory -d -p 8081:8081 -p 8082:8082 --network conan-training releases-docker.jfrog.io/jfrog/artifactory-cpp-ce:7.63.12
 
 - Name: Dagger Info
-  Type: Note
-  Tags: [ "dagger", "ci" ]
+  Tags: [ "dagger", "cronus" ]
   Description: Getting started with Dagger
   Note: |
-    How to point dagger CLI to engine running in the cluster
+    # Dagger Info
 
-      # Export the env var
-      # export _EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://<podname>?context=<context>&namespace=<namespace>&container=<container>"
-      export _EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://dagger-dagger-helm-engine-gshhj?namespace=dagger&container=dagger-engine"
+    ## Ref
 
-      # Verify
-      dagger query <<EOF
+      * Dagger CLI: https://docs.dagger.io/getting-started/api/cli/
+      * Dagger Shell: https://docs.dagger.io/features/shell/
+      * Chaining: https://docs.dagger.io/extending/chaining
+      * Gotest daggerverse: https://daggerverse.dev/mod/github.com/Excoriate/daggerverse/gotest@78e585c4d78c8b85c30db7f48144bc1c8eeeeb7c
+      * dagger.json https://docs.dagger.io/core-concepts/toolchains/#advanced-customizing-in-daggerjson
+    
+    ## Example from Kyle
+      * cronus (go)    - https://gitlab.dle.afrl.af.mil/cronus/arbm/demeter-surrogate/-/tree/main
+      * cronus (python)- https://gitlab.dle.afrl.af.mil/cronus/arbm/amapi/-/blob/main/.dagger/src/amapi/main.py
+
+    ## IntelliSense in vscode
+      * workaround - navigate into the .dagger sub-directory then run `uv run code .`
+      * (not sure if this is really needed) make sure this is enabled. `python.terminal.activateEnvInCurrentTerminal`
+
+- Name: ACT3 Dagger Modules
+  Tags: [ "dagger", "act3" ]
+  Description: ACT3 Dagger Modules for CI
+  Note: |
+    # ACT 3 Dagger Modules
+
+    * All Modules: https://daggerverse.dev/search?q=github.com%2Fact3-ai%2Fdagger%2Fpython
+    * Python: https://daggerverse.dev/mod/github.com/act3-ai/dagger/python
+    * Release: https://daggerverse.dev/mod/github.com/act3-ai/dagger/release
+    * GitHub: https://github.com/act3-ai/dagger
+
+- Name: Dagger Mirrors
+  Tags: [ "dagger" ]
+  Description: Configure Dagger to use Mirrors to avoid rate limit
+  Note: |
+      How to configure dagger engine to use a mirror to avoid docker pull rate limit
+
+      The following done on AG from a VM in `~/rate-work` directory.
+
       {
-          container {
-              from(address:"alpine") {
-                  withExec(args: ["uname", "-a"]) { stdout }
-              }
+        "logLevel": "trace",
+        "registries": {
+          "docker.io": {
+            "mirrors": ["harbor.act3.analyticsgateway.com/proxy_cache"]
           }
+        }
       }
-      EOF 
+
+      {
+        "logLevel": "trace",
+        "registries": {
+          "docker.io": {
+            "mirrors": ["harbor.act3.analyticsgateway.com/dockerhub"]
+          }
+        }
+      }
+
+      {
+        "logLevel": "trace",
+        "registries": {
+          "docker.io": {
+            "mirrors": ["http://192.168.30.204:8080"],
+            "rewrite": {
+              "^([^/]+)/(.*)$": "dockerhub/$1/$2"
+            }
+          }
+        }
+      }
+
+- Name: Dagger Commands
+  Tags: [ "dagger" ]
+  Description: Some dagger commands
+  Note: |
+    # Prune
+    dagger core engine local-cache prune
+
+    # Cache size
+    dagger core engine local-cache entry-set disk-space-bytes
+
+    # Query
+      Put your query in a file called query.gql
+      {
+        engine {
+          localCache {
+            entrySet {
+              entries
+            }
+          }
+        }
+      }
+
+      Then run 
+      $ dagger query <query.gql
+
+      # Or like this
+      DAGGER_NO_NAG=1 dagger query <<EOF | grep -B 6 -A 1 cachemount | less
+      {
+        engine {
+          localCache {
+            entrySet {
+              entries
+            }
+          }
+        }
+      }
+      EOF
+
+      DAGGER_NO_NAG=1 dagger query <<EOF | grep -B 3 -A 4 "uv sync" | less
+      {
+        engine {
+          localCache {
+            entrySet {
+              entries
+            }
+          }
+        }
+      }
+      EOF
 
 - Name: git Info
-  Type: Note
-  Tags: [ "git", "bash" ]
+  Tags: [ "git" ]
   Description: Info about git
   Note: |
     # Show config
@@ -87,12 +231,944 @@
     # Show signature on the last commit
     git log --show-signature -1
 
+- Name: pulling ACS images
+  Tags: [ "reg" ]
+  Description: Some hints on how to pull ACS images
+  Note: |
+    # Show config
+    podman login rs-art.vdl.afrl.af.mil/rs-dev-docker -u tony.gilkerson -p <PAT-see-cliper-rs-art.vdl.afrl.af.mil>
+
+- Name: DLE notes
+  Tags: [ "dle" ]
+  Description: Initial DLE notes
+  Note: |
+    # The main portal
+    https://dle.afrl.af.mil/
+
+    # Gitlab Ultimate
+    https://gitlab-ultimate.dle.afrl.af.mil/
+
+- Name: Code Review Instructions, ACS
+  Tags: [ "review" ]
+  Description: General instructions for ACS code reviews
+  Note: |
+    # Code Review Instructions, ACS
+
+    ## As a Dev
+
+      * When the dev working the task feels like the task is complete, the issue gets moved into 
+        review status and MRs are created (if they weren't already) 
+
+      * Those MRs are added to the issue to make it easier for the reviewer to review the changes
+
+      * In cases where the issue involves ci-templates or other repos that we do not maintain, it's
+        preferable not to involve Corey or others from his team until the reviewer from our team has
+        completed the review.
+
+    ## As a Reviewer
+    
+    ### General instructions
+
+      * Discuss with the dev as needed to accomplish each step
+      * If the review uncovers any corrections that should be made, communicate these to the dev so
+        they can be addressed
+        * In some cases this may include improvements rather than corrections.  
+        * Document any changes or corrections as needed.
+      * Repeat the steps when the dev is done with corrections until the issue is ready to be merged
+    
+    ### Specific Tasks
+
+      * understand the problem
+      * understand the goals of the solution
+      * review the code
+        * determine if the code addresses the problem and the solution goals
+        * where applicable check for best practices (we don't have any established/documented coding
+          standards/guidelines for devops work)
+        * is the code (specifically what has been changed) readable?
+      * verify the changes solves the problem and achieves the goals through manual/automated testing
+      * verify documentation
+        * do last, this gives us the option to delay documentation if necessary and prevents 
+          documentation churn as a consequence of review feedback
+      * Before merging to main check the DoD teams channel used to synchronize merges, if someone
+        else is doing a merge then you will need to wait.
 
 
+- Name: docker hub mirror on VDL
+  Tags: [ "vdk", "mirror", "runner" ]
+  Description: General instructions for ACS code reviews
+  Note: |
+
+    Change the FROM in the dockerfile to this
+
+    FROM $DOCKER_ADDRESS"rockylinux:9.2"
+
+    The VDL gitlab runners are not connected to the internet, so can’t reach docker hub directly. 
+    However rs-art is configured to mirror docker hub, so you can pull the image through 
+    rs-art.vdl.afrl.af.mil/rs-dev-docker/name-of-docker-hub-image-here.
+
+- Name: NCA Getting Started
+  Tags: [ "nca" ]
+  Description: Key info collected in the beginning
+  Note: |
+    # NCA Key Info
+
+    ## Links
+
+      * Gitlab Group: https://gitlab.dle.afrl.af.mil/facs/facs-nca
+      * Doc: https://facs.gitlab.dle.afrl.af.mil/facs-nca/docs/
+    
+    ## Team Members
+
+      * ian.cannon.ext@afresearchlab.com
+      * benjamin.whitley.1.ctr@afrl.af.mil
+      * michael.mendenhall.1@afrl.af.mil - organizer
+      * Scott Clouse (CIV) hamilton.clouse.1@us.af.mil
+
+    ### Google Drive
+
+      Folder: ACT3_FACS-NCA [EXT IL4]
+      Note: https://drive.google.com/drive/u/0/folders/0ADUvaOrPaKoEUk9PVA
+
+- Name: ACT3 Onboarding
+  Tags: [ "act3" ]
+  Description: Key info collected while Onboarding
+  Note: |
+    # ACT3 Onboarding
+
+    ## VPN
+
+      Note: https://vpn.act3-ace.com/
+      User: tgilkerson (vpn and gitlab)
+
+    ## Gitlab
+
+      Note: https://git.act3-ace.com/facs/nca
+      User: tgilkerson (vpn and gitlab)
+
+    ## Mattermost
+
+      Note: https://chat.git.act3-ace.com/login
+
+    ## AFRL Research Lab
+
+      email: tony.gilkerson.ext@afresearchlab.com
+      Your Air Force Research Laboratory point of contact: jared.culbertson@afrl.af.mil
+
+    ### AI
+    
+    The following terms can be found here at
+    https://hub.afresearchlab.com/terms_ext
+
+    Google Gemini is a set of Large Language Models (LLMs) offering powerful tools for text
+    analysis, content creation, knowledge extraction, and problem-solving across diverse domains. 
+    NotebookLM is an extension of Gemini that enables upload of external sources for analysis.
+    
+    Responsible Use
+    
+    * Data: Gemini is approved for IL4 data, but ITAR, EAR, PII, and PHI are prohibited. 
+      You are responsible for ensuring that you only use IL4 data with Gemini/NotebookLM when
+      * you are logged into your AFRL Google account
+      * see the 'Gemini for AFResearchLab' branding (or 'NotebookLM Plus')
+
+    * Transparency: Be honest about when you are using an LLM, especially in situations where people
+      might expect human interaction.
+
+    * Think about impact: Consider the potential consequences of using an LLM, both positive and
+      negative. Avoid using them for deception or to spread misinformation.
+
+    * Ethical use of AI in the DoD is a complex evolving topic. This document provides some initial
+      guidance: DoD Responsible AI Strategy & Implementation Pathway.
+      https://media.defense.gov/2022/Jun/22/2003022604/-1/-1/0/Department-of-Defense-Responsible-Artificial-Intelligence-Strategy-and-Implementation-Pathway.pdf 
+
+- Name: CloudLab for NCA runner
+  Tags: [ "cloudlab", "nca", "act3" ]
+  Description: CloudLab (afresearchlab)
+  Note: |
+    # CloudLab
+
+    ## Getting Access
+
+    * Need to sign the Terms of Service: https://hub.afresearchlab.com/terms_int
+    * Here are the instruction to get access: https://sites.google.com/afresearchlab.com/cloudlab/get-access
+
+    ## CloudLab App
+
+    * https://cloudlab.app.afresearchlab.com/
+
+    ## Console
+
+    * https://console.cloud.google.com/
+    * project: afrl-il4-sbx-ncarunner-c45c
+  
+- Name:  Analytics Gateway Info
+  Tags: [ "ag", "dle", "act3" ]
+  Description: Analytics Gateway Info
+  Note: |
+    # Analytics Gateway Info
+
+    - ACT3 Specific Gateway: https://act3.analyticsgateway.com/
+    - Standard MSGateway: https://msgateway.analyticsgateway.com/login
+
+    - My account login is via CAC and my user info:
+      Username: tgilkerson
+      Full Name: Tony Gilkerson
+      Email: Tony.Gilkerson@udri.udayton.edu
+
+- Name: dagger on AG 
+  Tags: [ "ag", "dagger" ]
+  Description: Some notes about running dagger on Analytics Gateway
+  Note: |
+    
+    - Point the dagger engine at the proxy
+
+      $ cat  ./.config/dagger/engine.json 
+      {
+        "logLevel": "trace",
+        "registries": {
+          "docker.io": {
+            "mirrors": ["harbor.act3.analyticsgateway.com/proxy_cache"]
+          }
+        }
+      }
+
+- Name: Homebrew on AG 
+  Tags: [ "ag", "homebrew" ]
+  Description: Some notes about running homebrew on Analytics Gateway
+  Note: |
+    
+    On AG you should install homebrew into you home folder.  To install Homebrew locally into 
+    your home directory on Linux, run the official installation script and define a custom 
+    installation prefix. 
+
+      # 1. Create the destination folder
+      mkdir -p ~/.linuxbrew
+
+      # 2. Download and extract the Homebrew files directly into ~/.linuxbrew 
+      # NOTE: I am not 100% sure about this
+      curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip-components=1 -C ~/.linuxbrew
+
+      # 3. Apply the changes to your current terminal session
+      eval "$($HOME/.linuxbrew/bin/brew shellenv)"
+
+      #4 Finalize
+      brew update
+
+- Name:  How-to RKE2 act3-runner
+  Tags: [ "runner", "ag", "dle", "act3" ]
+  Description: Deploying Gitlab Runner on Analytics Gateway for use on DLE
+
+  Note: |
+    # ACT3 Runner
+
+    This doc has the instruction for installing RKE2 and deploying the act3-runner in that cluster. 
+    It was done on the Analytics Gateway but I am going to use it to see if I can deploy a runner
+    on CloutLab for the NCA project.
+
+    https://gitlab.dle.afrl.af.mil/aaco/core/devsecops/archive/devsecops/cicd/analytics-gateway
+
+  
+- Name: How to Modify VDL repos
+  Tags: [ "migration", "how-to", "dle", "guide" ]
+  Description: How to Modify VDL repos to use DLE Pipeline Scripts
+  Note: |
+    # Handbook
+
+    * Old guild (kaniko)
+      * https://rs-glu.vdl.afrl.af.mil/rs/software/documentation/documentation/-/blob/main/Handbook/devSecOps/howto-kaniko.md
+
+    * New guild (buildkit)
+      * https://rs-glu.vdl.afrl.af.mil/rs/software/documentation/documentation/-/blob/main/Handbook/devSecOps/howto-dle-migration.md
+      * https://gitlab-ultimate.dle.afrl.af.mil/rs/software/documentation/documentation/-/blob/main/docs/Handbook/devSecOps/howto-dle-migration.md
+
+- Name: ASCE RKE2 Documentation
+  Tags: [ "ace", "rke2", "doc", "act3" ]
+  Description: This is the docs create by Jon for ASCE 
+  Note: |
+    #  ASCE RKE2 Documentation
+
+    * https://devsecops.git.act3-ace.com/asce-rke2/
+
+- Name: CloudLab for ACE Sandbox 
+  Tags: [ "cloudlab", "ace", "act3" ]
+  Description: Create by Jon b/c we are getting booted form WBI 
+  Note: |
+    #  CloudLab for ACE Sandbox
+
+    * https://console.cloud.google.com/welcome?project=afrl-il4-sbx-act3-prov-uat0
+
+- Name: AFIT ANTCenter GitLab and Mattermost
+  Tags: [ "afit", "gitlab", "act3", "antcenter" ]
+  Description: Migration of ACT3 from WBI to AFIT 
+  Note: |
+    #  AFIT ANTCenter GitLab and Mattermost
+
+    * Gitlab: https://git.antcenter.net
+    * Mattermost: https://chat.antcenter.net
+
+- Name: ssh keys on DLE
+  Tags: [ "gitlab", "act3", "dle", "ssh" ]
+  Description: ssh keys needed to connect to DLE Gitlab 
+  Note: |
+    # SSH Keys for DLE Gitlab
+
+    ## TLDR
+      Use ecdsa:
+      
+      ssh-keygen -t ecdsa -b 384 -C "tony.gilkerson@udri.udayton.edu act3 laptop"
+      chmod 600 ~/.ssh/id_ed25519
+      chmod 700 ~/.ssh
+      ssh -vT git@gitlab.dle.afrl.af.mil
+      
+    ## ref
+
+    * It was to a group thread that eventually linked to DevOps https://chat.git.act3-ace.com/act3/pl/ie9ewqt4z3fm7887i6sqbpufnr
+    * There's also a Confluence page about it: https://confluence.dle.afrl.af.mil/spaces/kb/pages/17435369/Gitlab
+- Name: Charge Codes
+  Tags: [ "chargecode", "timesheet", "time" ]
+  Description: Project and their charge codes
+  Note: |
+    # Charge Codes 
+
+    Resolute Sentry:
+      Project:  MLV072
+      Pay Type: RRG
+      Desc: ACS and RS work
+
+    ACT3 NCA:
+      Project:  MLV512
+      Pay Type: RRG
+      Desc: NCA runners and CI
+
+    C2ES:
+      Project:  MLV572
+      Pay Type: RRG
+      Desc: C2ES work
+
+    Core:
+      Project:  MLV012
+      Pay Type: RRG
+      Desc: ACT3 support and other non-project specific work
+
+    Vacation Exempt:
+      Project:  915812
+      Pay Type: RVC
+
+    Holiday Exempt:
+      Project:  91582A
+      Pay Type: RHL
+
+    Sick Leave Exempt:
+      Project:  91582B
+      Pay Type: RSK
+
+- Name: Get DoD Certs
+  Tags: [ "certs", "dod" ]
+  Description: zip files containing all the CA for PKI
+  Note: |
+    # DoD Certs
+
+    ################### NOTE ##################################
+      See: ~/gitlab-dle/anthony.gilkerson/notebook/topics/DoD Certs/README.md
+      The stuff below is old, here for reference
+    ################### NOTE ##################################
+    
+    ## DoC Cert Install Script
+
+    * see: https://gitlab.com/act3-ai/asce/up/-/tree/main/dod-certs
+
+    ## Dagger
+    
+    Dagger requires certs in a top-level directory.
+    Place a copy of your DoD certs in ~/.config/dagger/ca-certificates:
+
+    ```
+    cp /usr/local/share/ca-certificates/DoD/DoD* ~/.config/dagger/ca-certificates    
+    ```
+
+    ## Update the System Trust Store
+
+    Run the following command to tell Ubuntu to scan that directory and add your DoD certificates to the system-wide bundle:
+
+    ```
+    # Copy the certificate to the system trust directory (must have a .crt extension)
+    sudo cp ~/.config/dagger/ca-certificates/dod.crt /usr/local/share/ca-certificates/dod.crt
+
+    # Split the multi-cert file into individual certificate files
+    cd /usr/local/share/ca-certificates/dod.crt
+    awk '/-----BEGIN CERTIFICATE-----/{flag=1; c++} flag{print > sprintf("dod_ca_%02d.crt", c)} /-----END CERTIFICATE-----/{flag=0}' dod.crt
+
+    # Verify the split files look good, remove the all in one file
+    cat dod_ca_01.crt # for each 01 to 04
+    rm dod.crt
+
+    # Update the system CA store
+    sudo update-ca-certificates --fresh
+
+    # Verify
+    openssl s_client -connect mattermost.dle.afrl.af.mil:443 -CApath /etc/ssl/certs
+    ```
+
+    What this does:
+    It scans /usr/local/share/ca-certificates/.
+    It creates symbolic links in /etc/ssl/certs/.
+    It appends the certificates to the single ca-certificates.crt file used by most Linux applications (including curl, git, and Python).
+
+    ## Update the Chrome/NSS Database
+    
+    You need to do this so chrome trusts the DoD certs across all profiles.
+
+    In stall if needed:
+    
+    ```
+    sudo apt install libnss3-tools
+    ```
+
+    Then run this command to add the DoD certs to the NSS database used by Chrome:
+
+    ```
+    for cert in /usr/local/share/ca-certificates/DoD/*.crt; do
+        certname=$(basename "$cert" .crt)
+        certutil -d sql:$HOME/.pki/nssdb -A -t "CT,C,C" -n "$certname" -i "$cert"
+    done    
+    ```
+
+    Verify, You should see a list of your DoD CA certificates with the trust attributes CT,C,C.
+
+    ```
+    certutil -d sql:$HOME/.pki/nssdb -L
+    ```
+
+- Name: Sign git commit, How to setup
+  Tags: [ "git", "sign", "howto" ]
+  Description: How to configure git to sign commits
+  Note: |
+    # Generate a gpg key
+    #   Select option 1 - RSA and RSA
+    #   You can leave password blank if you want
+    gpg --full-gen-key
+
+    # List the key that you just generated <replace email with your email>
+    gpg --list-secret-keys --keyid-format LONG tony.gilkerson@udri.udayton.edu
+
+    # Look for the "sec" line, you want the XXX part
+    #   sec   rsa3072/xxxxxxxxxxxxxxxx 2025-09-16 [SC]
+    git config --global user.signingkey xxxxxxxxxxxxxxxx
+- Name: act3-pt info
+  Tags: [ "act3-pt", "act3" ]
+  Description: act3-pt info
+  Note: |
+    # act3-pt
+    
+    * getting started - https://devsecops.git.act3-ace.com/act3-pt/
+    * an example - https://github.com/act3-ai/blueprint-release
+
+    ## Login
+    
+    You need a PAT from gitlab and then login using it with 
+      
+    docker login reg.git.act3-ace.com
+
+- Name: Gitlab Instance Configuration
+  Tags: [ "gitlab"]
+  Description: Gitlab Instance Configuration
+  Note: |
+    # Gitlab Instance Configuration
+    
+    * https://gitlab-ultimate.dle.afrl.af.mil/help/instance_configuration
+    * https://gitlab.dle.afrl.af.mil/help/instance_configuration
+
+- Name: CAC Info
+  Tags: [ "cac" ]
+  Description: CAC Info
+  Note: |
+    # CAC Info
+    
+    * See topics/cac/README.md for info on how to setup card reader and browser
+    * My [JKO](https://jkodirect.jten.mil/Atlas2/page/desktop/DesktopHome.jsf) profile
+    * [Cyber Awareness Challenge](https://www.cyber.mil/cyber-awareness-challenge) then click login with CAC
+
+  
+    
+- Name: SailPoint IdentityIQ
+  Tags: [ "sailpoint", "act3", "afrl", ".mil" ]
+  Description: SailPoint IdentityIQ Info
+  Note: |
+    # SailPoint IdentityIQ
+
+    - anthony.gilkerson.ctr@us.af.mil email is associated with my SailPoint account when I log
+      in with CAC. I am not sure how/if it is related to tony.gilkerson.ext@afresearchlab.com
+
+    - https://af.okta.mil/ 
+      - I logged on with my CAC and in my profile I see anthony.gilkerson.ctr@us.af.mil
+      - I normally use ``tony.gilkerson.ext@afresearchlab.com` so I don't know what that means
+      - The `.min` account should be able to be used to log onto `https://webmail.apps.mil` but
+        I cant so looks like I need to get my NIPR account setup
+
+- Name: NIPR Info
+  Tags: [ "nipr", "cac", ".mil", "gal", "training"]
+  Description: NIPR Info
+  Note: |
+    # NIPR Info
+    
+    - email: anthony.gilkerson.ctr@us.af.mil
+    - inbox: https://webmail.apps.mil
+
+    ## Contractor Personnel Information
+
+    CAGE code: 50280
+    Government POC/Sponsor Name: Bryan Schmitt
+
+    ## DD2875 NIPR
+
+    name: Anthony E. Gilkerson
+    organization: AFRL
+    Office/Department: UAS & Embedded Systems
+    Office mailing address: 300 College Park, Dayton OH 45469
+    Designation of person: Contractor
+
+    ## Keep Current/GAL
+
+    * Every so often you will need to do this to keep your account active
+    * The ESDportal is where you go to view your GAL record
+    Sonic Boom VM
+
+    - Using UDRI Windows workstation
+    - Launch the Window App
+    - Connect to the USAF Azure Virtual Desktop
+    - Open: https://esd.us.af.mil/ESDportal
+
+    ## Misc
+
+    - Sonic Boom Help: 
+      https://act3.gitlab.dle.afrl.af.mil/docs/tasks/sonic-boom-avd/
+
+    - RY Helpdesk 
+      https://skylab.servicenowcloud.mil/esc
+    
+    - To check your NIPR training
+      https://sensors.ry.wpafb.af.mil
+      https://sensors.ry.wpafb.af.mil/app/training 
+      
+    - RY Training Mailbox 
+      AFRL.RY.Cybersecurity@us.af.mil
+
+- Name: uv Info
+  Tags: [ "uv", "python"]
+  Description: uv Info
+  Note: |
+    # uv Info
+    
+    ## List the size of your dependencies
+    
+    uv run python -c "for d in __import__('importlib.metadata').metadata.distributions(): print('{:>12.3f} KiB   {}'.format(sum(0 if not f.locate().is_file() else f.locate().stat().st_size for f in d.files) / 1024, d.name))" | sort -n
 
 
+- Name: C2ES info
+  Tags: [ "c2es" ]
+  Description: C2ES Info
+  Note: |
+
+    * Docs          - https://c2es1.gitlab.dle.afrl.af.mil/sil/gitlab-profile/
+    * GitLab        - https://gitlab.dle.afrl.af.mil/c2es1/
+    * Confluence    - https://confluence.dle.afrl.af.mil/spaces/C2ES/pages/465700248/C2ES+Home/
+    * JIRA (future) - https://jira.dle.afrl.af.mil/projects/C2ES/summary    
+
+- Name: CRONUS info
+  Tags: [ "cronus" ]
+  Description: CRONUS Info
+  Note: |
+    * CRONUS Docs - https://cronus.gitlab.dle.afrl.af.mil/arbm/docs/
+
+- Name: Training info
+  Tags: [ "training","learning" ]
+  Description: Training Info
+  Note: |
+
+    - From Kyle, The only list that matters. You don't want that training to expire.
+      You need to be on AFNET to get to reach this URL
+      https://sensors.ry.wpafb.af.mil
+      https://sensors.ry.wpafb.af.mil/app/traini
+    
+    - My Learning RY
+      https://lms-jets.cce.af.mil/moodle/
+      # Records Management - User Training (Annual Requirement) 
+      # This course is an annual requirement for all civilians, military, and contractors.
+      https://lms-jets.cce.af.mil/moodle/course/view.php?id=14532
+    
+    - Percipio (DAFeL RY)
+      https://usaf.percipio.com/login?state=%2Fchannels%2Fa9f93d9f-ac56-40b2-a019-98c18100f375%3Fsharelink%3DZHerMiQQI%26localeCode%3Den-US#/
+      https://usaf.percipio.com/linked-contents/0414388a-7336-40d1-b1de-3d05517f65c5/landing
+      # OR
+      https://usaf.percipio.com/my-learning (search for annual cyber awareness challenge)
+    
+    - RY Training
+      https://usaf.dps.mil/sites/20954/ryo/ryom/training/default.aspx
 
 
+- Name: AFNET info
+  Tags: [ "afnet", "ryweb"]
+  Description: AFNET Info
+  Note: |
+
+    - You need to be on AFNET to get to RYWeb (sensors.ry.wpafb.af.mil).
+    - You can get on AFNet in AVD (not EITaaS) and a NIPR box with VPN enabled.
+
+- Name: my email
+  Tags: [ "email", ".mil" ]
+  Description: email Info
+  Note: |
+
+    anthony.gilkerson.ctr@us.af.mil    "Gilkerson, Anthony E CTR USAF AFMC AFRL/RYZA" <anthony.gilkerson.ctr@us.af.mil>
+    anthony.gilkerson.ctr@afrl.af.mil
+    tony.gilkerson@udri.udayton.edu
+
+    - anthony.gilkerson.ctr@us.af.mil
+      inbox:    https://webmail.apps.mil/
+      apps:     https://af.okta.mil
+      isGooglAccount: No
+      
+    - anthony.gilkerson.ctr@afrl.af.mil (old tony.gilkerson.ext@afresearchlab.com)
+      login: https://sites.google.com/afresearchlab.com/portal
+      email: https://mail.google.com
+      help:  help@afrl.af.mil (For assistance at any time, reach out to the AFRL Google HelpDesk)
+      isGooglAccount: Yes
+
+    - tony.gilkerson@udri.udayton.edu
+      inbox: https://portal.udri.udayton.edu/
+      isGooglAccount: No?
+      VDI: |
+        # Access VDI
+        https://rdweb.wvd.azure.us/arm/webclient/index.html 
+        
+        # Once you're in use Edge and go to:
+        https://outlook.office365.us/mail/ 
+        
+
+- Name: chrome info
+  Tags: [ "chrome", "browser", "profile" ]
+  Description: Chrome Info
+  Note: |
+    - chrome://version/ 
+      shows you the profile path and other useful info about your chrome installation
+
+    - chrome://restart
+      restarts the browser, useful for when you change profiles or need to restart to apply some changes
+
+    - profiles
+      anthony.gilkerson.ctr@afrl.af.mil: "/home/tgilkerson/.config/google-chrome/Default"
+      anthony.gilkerson.ctr@us.af.mil:   "/home/tgilkerson/.config/google-chrome/Profile 5"
+
+    - bookmarks
+    
+      To share bookmarks, you need to delete the existing bookmarks file in Profile 5 and 
+      replace it with a "pointer" (symbolic link) to the file in Default.
+
+      # 1. Remove the existing bookmarks file in Profile 5
+      rm "/home/tgilkerson/.config/google-chrome/Profile 5/Bookmarks"
+
+      # 2. Create the symbolic link
+      ln -s "/home/tgilkerson/.config/google-chrome/Default/Bookmarks" "/home/tgilkerson/.config/google-chrome/Profile 5/Bookmarks"
+
+- Name: what is CRONUS
+  Tags: [ "chronus"]
+  Description: what is CRONUS
+  Note: |
+    CRONUS is the big AFRL program.  
+      
+    ARBM and A3R are under it.  
+    - A3R is automated boom and is under.  
+    - ARBM is about scheduling the refueling and has grown in the entire battle COA generation.
+        - MAD-M is a product of the ARBM team
 
 
+- Name: acronyms
+  Tags: [ "acronym", "abbr" ]
+  Description: Acronyms and Abbreviations
+  Note: |
+    or see CRONUS acronyms page: https://cronus.gitlab.dle.afrl.af.mil/arbm/docs/acronyms/
 
+    - ABM     Air Battle Manager
+    - ABMS    Advanced Battle Management System
+    - AFLCMC  Air Force Life Cycle Management Center
+    - ARBM    Air Refueling Battle Manager
+    - AMC     Air Mobility Command 
+    - ASCOT   Advanced Simulation Combat Operations Trainer
+    - A3R     Automated Air-to-Air Refueling 
+    - BC3     Battlespace Command & Control Center
+    - C2ES    Command and Control Effects at Scale
+    - C3BM    Command, Control, Communications, and Battle Management
+    - CBC2    Cloud-Based Command and Control
+    - CRONUS  Combat Refueling Operations & Networked Universal System
+    - DLE     Data Lab Environment
+    - GBC     Generate Battle COA
+    - JADO    Joint All -Domain Operations
+    - JADPACT Joint All-Domain Planner with Adaptive Collaborative/Control Technologies
+    - JWICS   Joint Worldwide Intelligence Communications System
+    - MAD-M   Machine Adided Decision Making
+    - MASH    Multi Decision Advantage Sprint for Human-machine teaming
+    - MEF     Match effectors
+    - PAE     Perceive actionable entity
+    - TOC-L   Tactical Operations Center - Lite
+    - SCEPTER Strategic Chaos Engine For Planning, Tactics, Experimentation and Resiliency
+    - SABRE   Secret and Below Releasable Environment framework
+    - ShOC-N  Shadow Operations Center - Nellis (also known as the 805th Combat Training Squadron)
+    - VDL     Virtual Desktop Lab
+    
+- Name: dod safe
+  Tags: [ "safe", "util"]
+  Description: dod safe
+  Note: |
+
+    https://safe.apps.mil
+
+- Name: direnv
+  Tags: [ "util", "tool" ]
+  Description: Direnv
+  Note: |
+    # Ref
+    https://direnv.net
+
+    # Install
+    brew install direnv
+
+    # Hook
+    
+    ## bash
+    eval "$(direnv hook bash)"
+    
+    ## zsh
+    eval "$(direnv hook zsh)"
+    
+- Name: .Net Install
+  Tags: [ ".net"  ]
+  Description: Direnv
+  Note: |
+    # Install
+    brew install dotnet@10
+
+    # 1. Create a symlink so your shell can find the dotnet binary
+    brew link --overwrite dotnet@10
+
+    # 2. Add the required DOTNET_ROOT environment variable to your shell profile
+    SHELL_RC="$HOME/.bashrc"
+    [[ "$SHELL" == */zsh ]] && SHELL_RC="$HOME/.zshrc"
+
+    echo 'export DOTNET_ROOT="$(brew --prefix dotnet@10)/libexec"' >> "$SHELL_RC"
+
+    # 3. Reload your profile to apply changes
+    source "$SHELL_RC"
+
+    # Verify
+    $ dotnet --version
+
+- Name: .Net commands
+  Tags: [ ".net"  ]
+  Description: Direnv
+  Note: |
+    # 1. Restore the exact versions of the tools pinned by this codebase
+    dotnet tool restore
+
+    # 2. Clear out any broken build artifacts from earlier
+    dotnet clean
+
+- Name: HPC Welcome email
+  Tags: [ "hpc"  ]
+  Description: HPC Welcome email
+  Note: |
+    Dear Anthony E. Gilkerson,
+
+    Welcome to the HPCMP DSRC environment. Below is important information concerning your access 
+    for the 2026 fiscal year. Please save this information for future reference.
+
+    ACCOUNT DETAILS
+    Username: tgilker
+    Kerberos Principal: tgilker@HPCMP.HPC.MIL
+    Notification Email: anthony.gilkerson.ctr@us.af.mil
+    AUTHORIZED SYSTEMS (FY2026)
+
+    SYSTEM     HOST NAME                 SUBPROJECT     GROUP     SITE
+    ------------------------------------------------------------------
+    gold       gold.erdc.hpc.mil         AFSNW27526RYZ  2752HRYZ  ERDC
+    st-vsm1    st-vsm1.navydsrc.hpc.mil  AFSNW27526RYZ  2752HRYZ  NAVY
+    wheat      wheat.erdc.hpc.mil        AFSNW27526RYZ  2752HRYZ  ERDC
+    narwhal    narwhal.navydsrc.hpc.mil  AFSNW27526RYZ  2752HRYZ  NAVY
+    blueback   blueback.navydsrc.hpc.mil AFSNW27526RYZ  2752HRYZ  NAVY
+    raider     raider.afrl.hpc.mil       AFSNW27526RYZ  2752HRYZ  AFRL
+    warhawk    warhawk.afrl.hpc.mil      AFSNW27526RYZ  2752HRYZ  AFRL
+    nautilus   nautilus.navydsrc.hpc.mil AFSNW27526RYZ  2752HRYZ  NAVY
+
+    ADDITIONAL INFORMATION
+    Once your account is activated, you will have access to the HPC Portal at the DSRC site 
+    specific to the systems listed above. The HPC Portal provides tools allowing command-line 
+    access and the ability to manage files and jobs via a web browser. The HPC Portal also 
+    supports pre-/post-processing and data visualization using a web interface.  
+
+    For information concerning your account(s) at the above listed site(s), please contact your 
+    S/AAA.
+
+    For Support Documentation, please follow the 
+    URL: https://centers.hpc.mil/users/documentation.html
+
+- Name: HPC Info
+  Tags: [ "hpc"  ]
+  Description: HPC Info
+  Note: |
+    * Jon: Getting started with HPC is actually not bad at all. 
+      It's a few forms, and they'll mail you a Yubikey (make sure you choose to authenticate with 
+      Yubikey and not CAC). Then you can either access it from iLauncher on AG or their new Open 
+      OnDemand service, e.g. https://raider.ood.hpc.mil
+    
+    * From Bryan 
+      - https://training.hpc.mil has a "new user, getting started" tab
+      - https://centers.hpc.mil/users/HPCTraining.html#new_user - from pIE email
+    
+    * pIE account info:
+
+      Applicant Name:  Anthony Edward Gilkerson
+      Applicant Kerberos Principal/Realm:  tgilker@HPCMP.HPC.MIL
+      Org ID:  AFSNW
+      User ID:  261316
+      Email:  anthony.gilkerson.ctr@us.af.mil
+      Approved Date:  Mon Aug 24 11:01:03 CDT 2026
+      Approved By:   Nicholas Lanham
+
+      Preferred username:  tgilker
+      Preferred shell:  bash
+      Approved Date:  Thu Aug 20 14:54:51 CDT 2026
+      Approved By:  Ryan Kimmet
+
+      A CI has been added to subproject AFSNW27526RYZ.
+
+      Subproject Title: Gotcha-RYZ
+      Fiscal Year: 2026
+
+      Principal Investigator: Elizabeth Regina Sudkamp
+      Principal Investigator email: elizabeth.sudkamp.1@us.af.mil
+      New Co-Investigator: Anthony Edward Gilkerson
+
+      Modified Date: Tue Aug 25 15:50:17 CDT 2026
+      Modified By: Bryan Michael Schmitt
+      
+
+- Name: Brew Install Home Dir
+  Tags: [ "brew"  ]
+  Description: How to install homebrew in our home directory
+  Note: |
+
+    # 1. Move to your home directory and make the folder
+    cd ~
+    mkdir .linuxbrew
+
+    # 2. Download and extract the official Homebrew core tarball directly into it
+    curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip-components 1 -C .linuxbrew
+
+    # Determine your active shell config file (handles bash or zsh automatically)
+    SHELL_RC="$HOME/.bashrc"
+    [[ "$SHELL" == */zsh ]] && SHELL_RC="$HOME/.zshrc"
+
+    # Append the Homebrew environment initialization to your profile
+    echo '# Homebrew Custom Home Folder Installation' >> "$SHELL_RC"
+    echo 'eval "$($HOME/.linuxbrew/bin/brew shellenv)"' >> "$SHELL_RC"
+
+    # Reload your shell profile right now to apply the changes instantly
+    source "$SHELL_RC"
+
+    # Verify
+    brew doctor
+
+    # Might need to do this
+    sudo apt-get update
+    sudo apt install bubblewrap
+
+- Name: Jetson Info
+  Tags: [ "jetson"  ]
+  Description: How to install homebrew in our home directory
+  Note: |
+    ## One time setup
+
+    ### Wireguard config file:
+    ---------------------------------------------------------
+    [Interface]
+    PrivateKey = oLe3cN+1Cp2rDAD13/mrrTZyiATYxTyosYCvuLGmzkg=
+    Address = 10.200.0.9/32
+
+    [Peer]
+    PublicKey = 4dMPM0Sx+pJrgpdfYmoXxMQc+EgCaLcWhhdH89XsPRw=
+    Endpoint = 98.102.11.26:51820
+    AllowedIPs = 10.200.0.0/24, 10.10.10.0/24
+    PersistentKeepalive = 25
+    ---------------------------------------------------------
+    
+    Save it to your AG home folder in a place you'll remember, like:
+      ~/wireguard/wg_jetson.conf
+    
+    Make sure to `chmod 400` it.
+
+    ### ssh config
+
+    Add the following to your SSH config at `~/.ssh/config`:
+    
+    ---------------------------------------------------------
+    Host hub
+      Hostname 10.200.0.1
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/jetson
+
+    Host j2
+      ProxyJump hub
+      Hostname 10.10.10.20
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa
+
+    Host j3
+      ProxyJump hub
+      Hostname 10.10.10.30
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa
+
+    Host j4
+      ProxyJump hub
+      Hostname 10.10.10.40
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa
+
+    Host j5
+      ProxyJump hub
+      Hostname 10.10.10.50
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa
+
+    Host j6
+      ProxyJump hub
+      Hostname 10.10.10.60
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa
+
+    Host j7
+      ProxyJump hub
+      Hostname 10.10.10.70
+      User tgilkerson
+      IdentityFile /p/home/tgilkerson/.ssh/id_rsa    
+    ---------------------------------------------------------
+
+    ## To Access Jetson
+
+    Start up a VM and run the following to connect to Wireguard:
+
+    ---------------------------------------------------------
+    sudo apt update
+    sudo apt install -y wireguard-tools
+    sudo wg-quick up ~/wireguard/wg_jetson.conf
+    ---------------------------------------------------------
+
+    * You can connect to any of the boards with `ssh j2`, `ssh j3` etc...
+    * The j6 board is the same type that you have right now
+    * Once your is returned (no rush), that one will be j7. 
+- Name: www xxx zzz
+  Tags: [ "xxx","yyy"  ]
+  Description: desc aaa
+  Note: bbb
+- Name: xxx zzz
+  Tags: [ "xxx","yyy"  ]
+  Description: desc aaa
+  Note: bbb
