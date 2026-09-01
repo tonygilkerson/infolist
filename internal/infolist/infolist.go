@@ -42,7 +42,7 @@ func (notes *Notes) LoadFromFile(filePath string) error {
 }
 
 // FindInAny will look for the filter string in all Note fields.
-func (notes *Notes) Find(filter string, byAny bool, byName bool, byDesc bool, byNote bool, byTags bool) (bool, Notes) {
+func (notes *Notes) Find(filter string, findIn string) (bool, Notes) {
 
 	var filteredNotes Notes
 
@@ -50,7 +50,7 @@ func (notes *Notes) Find(filter string, byAny bool, byName bool, byDesc bool, by
 
 
 		// found in name?
-		if byAny || byName {
+		if findIn == "any" || findIn == "name" {
 			if strings.Contains(strings.ToLower(note.Name), strings.ToLower(filter)) {
 				filteredNotes = append(filteredNotes, note)
 				continue
@@ -58,7 +58,7 @@ func (notes *Notes) Find(filter string, byAny bool, byName bool, byDesc bool, by
 		}
 
 		// found in description?
-		if byAny || byDesc {
+		if findIn == "any" || findIn == "desc" {
 			if strings.Contains(strings.ToLower(note.Description), strings.ToLower(filter)) {
 				filteredNotes = append(filteredNotes, note)
 				continue
@@ -66,7 +66,7 @@ func (notes *Notes) Find(filter string, byAny bool, byName bool, byDesc bool, by
 		}
 		
 		// found in note?
-		if byAny || byNote {
+		if findIn == "any" || findIn == "note" {
 			if strings.Contains(strings.ToLower(note.Note), strings.ToLower(filter)) {
 				filteredNotes = append(filteredNotes, note)
 				continue
@@ -74,7 +74,7 @@ func (notes *Notes) Find(filter string, byAny bool, byName bool, byDesc bool, by
 		}
 
 		// found in tags?
-		if byAny || byTags {
+		if findIn == "any" || findIn == "tags" {
 			tags := strings.Join(note.Tags, ", ")
 			if strings.Contains(strings.ToLower(tags), strings.ToLower(filter)) {
 				filteredNotes = append(filteredNotes, note)

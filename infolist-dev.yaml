@@ -28,3 +28,13 @@
   Tags: [ "c", "d" ]
   Description: A link to yahoo
   Note: https://www.yahoo.com
+
+- Name: yahoo plus
+  Tags: [ "c", "d", "p" ]
+  Description: More of the same
+  Note: Yes more of the same but not exactly
+
+- Name: ya not in name
+  Tags: [ "uuu" ]
+  Description: yahoo is not in the name
+  Note: This is crazy, right

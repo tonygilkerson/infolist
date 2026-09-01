@@ -27,7 +27,7 @@ func main() {
 	//
 
 	// Find command
-	findFlag := flag.String("f","","find me")
+	inFlag := flag.String("in","any","find in [ any | name | desc | note | tags ]")
 	showNoteFlag := flag.Bool("note",false,"Show notes field")
 	
 
@@ -43,9 +43,15 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 	cmd := "find" // default command
+	arg := ""
+
+	// Keep it simple assume one command and one argument: `$infolist <cmd> <arg>`
 
 	if len(args) > 0 {
 		cmd = args[0]
+	} 
+	if len(args) > 1 {
+		arg = args[1]
 	} 
 	
 	// for now lets just accept one argument plus flags
@@ -68,15 +74,8 @@ func main() {
 	// 
 	switch cmd {
 	case "find":
-		fmt.Printf("Find '%v' in any field:\n\n", *findFlag )
-		found,filteredNotes := notes.Find(*findFlag,true,false,false,false,false)
-		if found {
-			infolist.PrintNotes(filteredNotes,*showNoteFlag)
-		} 
-
-	case "find-name":
-		fmt.Printf("Find '%v' in the Name:\n\n", *findFlag )
-		found,filteredNotes := notes.Find(*findFlag,false,true,false,false,false)
+		fmt.Printf("Find '%v' in '%s' field:\n\n", arg, *inFlag )
+		found,filteredNotes := notes.Find(arg,*inFlag)
 		if found {
 			infolist.PrintNotes(filteredNotes,*showNoteFlag)
 		} 
