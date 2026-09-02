@@ -26,6 +26,10 @@ go install ./cmd/infolist
 
 ## As a User
 
+```sh
+infolist list
+```
+
 
 ## Example Project
 

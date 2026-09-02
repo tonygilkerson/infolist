@@ -117,6 +117,7 @@ func (notes *Notes) Peek(filter string) {
 		
 		// found in note?
 		if strings.Contains(strings.ToLower(note.Note), strings.ToLower(filter)) {
+			results = append(results, "Note:")
 			results = append(results, getContext(note.Note,filter,))
 			found = true
 		}
@@ -222,7 +223,7 @@ func getContext(multiLineStr string, target string) string {
 			} 
 
 			// MATCHING Line
-			context = context + fmt.Sprintf("%s\n", line)
+			context = context + fmt.Sprintf(">>>%s\n", line)
 
 			// Line AFTER (check lower boundary)
 			if i < totalLines-1 {
