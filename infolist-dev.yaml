@@ -38,3 +38,18 @@
   Tags: [ "uuu" ]
   Description: yahoo is not in the name
   Note: This is crazy, right
+
+- Name: ttt
+  Tags: [ "uuu" ]
+  Description: I have 3t in my name
+  Note: but no where else
+
+- Name: 3t in Note
+  Tags: [ "uuu" ]
+  Description: I have 3t in my note
+  Note: |-
+    line 1
+    ttt
+    line 3
+
+

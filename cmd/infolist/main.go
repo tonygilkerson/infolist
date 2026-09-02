@@ -85,6 +85,10 @@ func main() {
 
 	case "tags":
 		notes.ListTags()
+
+	case "peek":
+		notes.Peek(arg)
+		
 		
 	default:
 		fmt.Printf("Unknown command: %s\n", os.Args[1])

@@ -91,6 +91,58 @@ func (notes *Notes) Find(filter string, findIn string) (bool, Notes) {
 	return false, nil
 }
 
+
+// Peek will look for the filter string in all Note fields.
+func (notes *Notes) Peek(filter string) {
+
+	var results []string
+	var found bool
+	divider := strings.Repeat("-", 100)
+
+	for _, note := range *notes {
+
+		results = nil
+		found = false
+
+		// found in name?
+		if strings.Contains(strings.ToLower(note.Name), strings.ToLower(filter)) {
+			found = true
+		}
+		
+		// found in description?
+		if strings.Contains(strings.ToLower(note.Description), strings.ToLower(filter)) {
+			results = append(results, fmt.Sprintf("Desc: %s",note.Description))
+			found = true
+		}
+		
+		// found in note?
+		if strings.Contains(strings.ToLower(note.Note), strings.ToLower(filter)) {
+			results = append(results, getContext(note.Note,filter,))
+			found = true
+		}
+		
+		// found in tags?
+		tags := strings.Join(note.Tags, ", ")
+		if strings.Contains(strings.ToLower(tags), strings.ToLower(filter)) {
+			results = append(results, fmt.Sprintf("Tags: %s",tags))
+			found = true
+		}
+
+		if found {
+			fmt.Printf("%s\n", divider)
+			fmt.Printf("Name: %s\n", note.Name)
+			for _,line := range results {
+				fmt.Printf("%s\n", line)
+			}
+		}
+	}
+	if found {
+		fmt.Printf("%s\n", divider)
+	}
+
+}
+
+
 // ListTags will print a unique list of tags
 func (notes *Notes) ListTags() {
 
@@ -149,4 +201,38 @@ func truncate(s string, maxLen int) string {
 		return s[:maxLen-3] + "..."
 	}
 	return s
+}
+
+// GetContext searches for target in multiLineStr and return
+// the matching line along with its preceding and succeeding lines.
+func getContext(multiLineStr string, target string) string {
+	// Split the multi-line string into individual lines
+	lines := strings.Split(multiLineStr, "\n")
+	totalLines := len(lines)
+
+	for i, line := range lines {
+		var context string
+
+		// Case-sensitive check (use strings.ToLower for case-insensitive)
+		if strings.Contains(strings.ToLower(line), strings.ToLower(target)) {
+
+			// Line BEFORE (check upper boundary)
+			if i > 0 {
+				context = fmt.Sprintf("%s\n", lines[i-1])
+			} 
+
+			// MATCHING Line
+			context = context + fmt.Sprintf("%s\n", line)
+
+			// Line AFTER (check lower boundary)
+			if i < totalLines-1 {
+				context = context + fmt.Sprintf("%s\n", lines[i+1])
+			} 
+
+			// return context
+			return context
+		}
+	}
+
+	return ""
 }
